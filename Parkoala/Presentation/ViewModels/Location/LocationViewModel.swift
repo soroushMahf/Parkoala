@@ -10,6 +10,7 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
 @MainActor
 @Observable
@@ -17,10 +18,14 @@ final class LocationViewModel {
     
     private let locationService: LocationService
     private let locationUseCase: ManageParkingLocationUseCase
+    private let carParkSearchService: CarParkSearchService
     
     private(set) var parkedLocation: ParkingLocation?
     private(set) var errorMessage: String?
     private(set) var isLoading = false
+    
+    private(set) var nearbyCarParks: [MKMapItem] = []
+    private(set) var isSearching = false
     
     var currentLocation: Coordinate? {
         locationService.currentLocation
@@ -32,10 +37,12 @@ final class LocationViewModel {
     
     init(
         locationService: LocationService,
-        locationUseCase: ManageParkingLocationUseCase
+        locationUseCase: ManageParkingLocationUseCase,
+        carParkSearchService: CarParkSearchService? = nil
     ) {
         self.locationService = locationService
         self.locationUseCase = locationUseCase
+        self.carParkSearchService = carParkSearchService ?? CarParkSearchService()
     }
     
     func requestPermission() {
@@ -85,5 +92,24 @@ final class LocationViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+    
+    // Searches for parking facilities around the specific location
+    func searchNearbyParking(at coordinate: Coordinate) async {
+        guard !isSearching else { return }
+        
+        isSearching = true
+        errorMessage = nil
+        defer { isSearching = false }
+        
+        do {
+            nearbyCarParks = try await carParkSearchService.searchNearby(coordinate: coordinate)
+        } catch {
+            errorMessage = "Unable to find nearby parking. Please try again."
+        }
+    }
+    
+    func clearError() {
+        errorMessage = nil
     }
 }
