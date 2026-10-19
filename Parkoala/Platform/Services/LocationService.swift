@@ -22,6 +22,8 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     
     private var isTracking = false
     
+    private var shouldStartTrackingAfterAuthorization = false
+    
     override init() {
         authorizationStatus = manager.authorizationStatus
         super.init()
@@ -49,6 +51,10 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     // Starts continuous location updates while using viewing the map
     func startUpdatingLocation() {
         guard isAuthorized else {
+            if authorizationStatus == .notDetermined {
+                shouldStartTrackingAfterAuthorization = true
+            }
+            
             handleUnauthorized()
             return
         }
@@ -57,13 +63,14 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         
         errorMessage = nil
         isTracking = true
-        
         manager.startUpdatingLocation()
     }
     
     // Stops continuous location updates when they're no longer needed
     func stopUpdatingLocation() {
         guard isTracking else { return }
+        
+        shouldStartTrackingAfterAuthorization = false
         
         manager.stopUpdatingLocation()
         isTracking = false
@@ -111,11 +118,17 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         
         if isAuthorized {
             errorMessage = nil
+            
+            if shouldStartTrackingAfterAuthorization {
+                shouldStartTrackingAfterAuthorization = false
+                startUpdatingLocation()
+            }
         } else {
             stopUpdatingLocation()
             currentLocation = nil
             
             if authorizationStatus == .denied || authorizationStatus == .restricted {
+                shouldStartTrackingAfterAuthorization = false
                 errorMessage = ParkingLocationError.permissionDenied.localizedDescription
             }
         }

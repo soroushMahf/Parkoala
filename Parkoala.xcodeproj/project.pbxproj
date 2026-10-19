@@ -20,7 +20,6 @@
 				Presentation/Components/.gitkeep,
 				Presentation/ViewModels/Money/.gitkeep,
 				Presentation/ViewModels/Sessions/.gitkeep,
-				Presentation/Views/Location/.gitkeep,
 				Presentation/Views/Money/.gitkeep,
 				Presentation/Views/Sessions/.gitkeep,
 				SupportingFiles/.gitkeep,
