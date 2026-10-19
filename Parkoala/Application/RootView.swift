@@ -2,7 +2,7 @@ import SwiftUI
 
 // The main tabs of the app. Each module owner swaps their placeholder
 // for their real screen once it is built.
-struct RootTabView: View {
+struct RootView: View {
     var body: some View {
         TabView {
             Tab("Park", systemImage: "car.fill") {
@@ -10,9 +10,6 @@ struct RootTabView: View {
             }
             Tab("Nearby", systemImage: "map.fill") {
                 placeholder("Nearby car parks", owner: "Location")
-            }
-            Tab("Scan", systemImage: "camera.viewfinder") {
-                placeholder("Scan a sign", owner: "Scanner")
             }
             Tab("Money", systemImage: "dollarsign.circle.fill") {
                 placeholder("Parking costs", owner: "Money")
@@ -26,5 +23,5 @@ struct RootTabView: View {
 }
 
 #Preview {
-    RootTabView()
+    RootView()
 }

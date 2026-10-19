@@ -11,7 +11,7 @@ import SwiftUI
 struct ParkoalaApp: App {
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            RootView()
         }
     }
 }
