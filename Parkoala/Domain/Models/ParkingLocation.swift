@@ -4,5 +4,4 @@ import Foundation
 struct ParkingLocation: Hashable {
     var coordinate: Coordinate?
     var levelAndBay: String?
-    var photoFileName: String?
 }
