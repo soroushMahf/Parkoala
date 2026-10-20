@@ -18,19 +18,25 @@ struct NearbyMapView: View {
     @State private var hasCenteredOnUser = false
     @State private var visibleRegion: MKCoordinateRegion?
     
+    @State private var selectedCarParkID: String?
+    @State private var selectedCarPark: SelectedCarPark?
+    
     var body: some View {
         NavigationStack {
-            Map(position: $cameraPosition) {
+            Map(position: $cameraPosition, selection: $selectedCarParkID) {
                 UserAnnotation() // user's current location
                 
                 // Nearby parking facilities
-                ForEach(viewModel.nearbyCarParks, id: \.self) { carPark in
+                ForEach(0..<viewModel.nearbyCarParks.count, id: \.self) { index in
+                    let carPark = viewModel.nearbyCarParks[index]
+                    
                     Marker(
                         carPark.name ?? "Parking",
                         systemImage: "parkingsign.square.fill",
                         coordinate: carPark.placemark.coordinate
                     )
                     .tint(.blue)
+                    .tag(String(index))
                 }
             }
             .mapControls {
@@ -83,6 +89,14 @@ struct NearbyMapView: View {
             .onDisappear() {
                 viewModel.stopLocationUpdates()
             }
+            .onChange(of: selectedCarParkID) { _, newValue in
+                guard let newValue,
+                      let index = Int(newValue),
+                      viewModel.nearbyCarParks.indices.contains(index)
+                else { return }
+                
+                selectedCarPark = SelectedCarPark(mapItem: viewModel.nearbyCarParks[index])
+            }
             .onChange(of: viewModel.currentLocation) {_, newLocation in
                 guard !hasCenteredOnUser, let newLocation else { return }
                 
@@ -106,31 +120,27 @@ struct NearbyMapView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
+            .sheet(item: $selectedCarPark, onDismiss: {
+            selectedCarParkID = nil
+            }) { selection in
+                CarParkDetailView(carPark: selection.mapItem)
+            }
         }
     }
     
-    private let previewCoordinate = Coordinate(
-        latitude: -33.8830,
-        longitude: 151.2000
-    )
-
+    private struct SelectedCarPark: Identifiable {
+        let id = UUID()
+        let mapItem: MKMapItem
+    }
+    
     private func centreOnUser() {
         guard let location = viewModel.currentLocation else {
-            centreMap(on: previewCoordinate)
+            viewModel.requestCurrentLocation()
             return
         }
-
+        
         centreMap(on: location)
     }
-    
-//    private func centreOnUser() {
-//        guard let location = viewModel.currentLocation else {
-//            viewModel.requestCurrentLocation()
-//            return
-//        }
-//        
-//        centreMap(on: location)
-//    }
     
     private func centreMap(on coordinate: Coordinate) {
         withAnimation {
@@ -149,6 +159,9 @@ struct NearbyMapView: View {
     
     private func searchVisibleArea() {
         guard let region = visibleRegion else { return }
+        
+        selectedCarPark = nil
+        selectedCarParkID = nil
         
         let coordinate = Coordinate(
             latitude: region.center.latitude,
@@ -173,7 +186,7 @@ struct NearbyMapView: View {
 }
 
 // temp repository for preview
-private struct PreviewSessionRepository: SessionRepository {
+struct PreviewSessionRepository: SessionRepository {
 
     func activeSession(for vehicleID: UUID) async throws -> ParkingSession? {
         nil
