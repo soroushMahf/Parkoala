@@ -35,6 +35,33 @@ final class LocationViewModel {
         locationService.authorizationStatus
     }
     
+    var sortedNearbyCarParks: [NearbyParkingResult] {
+        guard let currentLocation else { return [] }
+        
+        let userLocation = CLLocation(
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude
+        )
+        
+        return nearbyCarParks.map { carPark in
+            let coordinate = carPark.placemark.coordinate
+            
+            let parkingLocation = CLLocation(
+                latitude: carPark.placemark.coordinate.latitude,
+                longitude: carPark.placemark.coordinate.longitude
+            )
+            
+            let distance = userLocation.distance(from: parkingLocation)
+            
+            return NearbyParkingResult(
+                id: "\(coordinate.latitude),\(coordinate.longitude),\(carPark.name ?? "")",
+                mapItem: carPark,
+                distanceMeters: distance
+            )
+        }
+        .sorted { $0.distanceMeters < $1.distanceMeters }
+    }
+    
     init(
         locationService: LocationService,
         locationUseCase: ManageParkingLocationUseCase,
@@ -111,5 +138,19 @@ final class LocationViewModel {
     
     func clearError() {
         errorMessage = nil
+    }
+}
+
+struct NearbyParkingResult: Identifiable {
+    let id: String
+    let mapItem: MKMapItem
+    let distanceMeters: Double
+    
+    var formattedDistance: String {
+        if distanceMeters < 1000 {
+            return "\(Int(distanceMeters.rounded())) m"
+        }
+        
+        return String(format: "%.1f km", distanceMeters / 1000)
     }
 }

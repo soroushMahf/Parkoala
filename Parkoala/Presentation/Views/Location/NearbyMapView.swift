@@ -19,7 +19,11 @@ struct NearbyMapView: View {
     @State private var visibleRegion: MKCoordinateRegion?
     
     @State private var selectedCarParkID: String?
-    @State private var selectedCarPark: SelectedCarPark?
+    
+    @State private var isParkingSheetPresented = false
+    @State private var selectedCarParkIndex: Int?
+    
+    @State private var isCenteredOnUser = false
     
     var body: some View {
         NavigationStack {
@@ -48,19 +52,49 @@ struct NearbyMapView: View {
                 pointsOfInterest: .excludingAll
             ))
             .overlay(alignment: .bottomTrailing) {
-                Button {
-                    centreOnUser()
-                } label : {
-                    Image(systemName: "location.fill")
-                        .font(.title3)
-                        .frame(width: 48, height: 48)
-                        .background(.regularMaterial, in: Circle())
+                VStack(alignment: .trailing, spacing: 12) {
+                    Button {
+                        centreOnUser()
+                    } label : {
+                        Image(systemName: isCenteredOnUser ? "location.fill" : "location")
+                            .font(.title3)
+                            .frame(width: 48, height: 48)
+                            .background(.regularMaterial, in: Circle())
+                    }
+                    .accessibilityLabel("Center map on my location")
+                    
+                    if !viewModel.nearbyCarParks.isEmpty {
+                        Button {
+                            showNearbyParkingList()
+                        } label : {
+                            Image(systemName: "parkingsign.circle.fill")
+                                .font(.title3)
+                                .frame(width: 48, height: 48)
+                                .background(.regularMaterial, in: Circle())
+                        }
+                    }
                 }
-                .accessibilityLabel("Center map on my location")
                 .padding()
+                
             }
             .onMapCameraChange(frequency: .onEnd) { context in
                 visibleRegion = context.region
+                
+                // checks if location is on centered on user.
+                // If it's not, it'll trigger isCenteredOnUser to be false
+                if let userLocation = viewModel.currentLocation {
+                    let mapCenter = CLLocation(
+                        latitude: context.region.center.latitude,
+                        longitude: context.region.center.longitude
+                    )
+                    
+                    let userCoordinate = CLLocation(
+                        latitude: userLocation.latitude,
+                        longitude: userLocation.longitude
+                    )
+                    
+                    isCenteredOnUser = mapCenter.distance(from:userCoordinate) < 10
+                }
             }
             .safeAreaInset(edge: .bottom) {
                 Button {
@@ -95,7 +129,8 @@ struct NearbyMapView: View {
                       viewModel.nearbyCarParks.indices.contains(index)
                 else { return }
                 
-                selectedCarPark = SelectedCarPark(mapItem: viewModel.nearbyCarParks[index])
+                selectedCarParkIndex = index
+                isParkingSheetPresented = true
             }
             .onChange(of: viewModel.currentLocation) {_, newLocation in
                 guard !hasCenteredOnUser, let newLocation else { return }
@@ -120,17 +155,33 @@ struct NearbyMapView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
-            .sheet(item: $selectedCarPark, onDismiss: {
-            selectedCarParkID = nil
-            }) { selection in
-                CarParkDetailView(carPark: selection.mapItem)
+            .sheet(isPresented: $isParkingSheetPresented, onDismiss: {
+                selectedCarParkID = nil
+                selectedCarParkIndex = nil
+            }) {
+                Group {
+                    if let index = selectedCarParkIndex,
+                       viewModel.nearbyCarParks.indices.contains(index) {
+                            
+                        CarParkDetailView(
+                            carPark: viewModel.nearbyCarParks[index]
+                        )
+                    
+                    } else {
+                        NearbyParkingListView(
+                            carParks: Array(viewModel.sortedNearbyCarParks.prefix(6))
+                        ) { carPark in
+                            if let index = viewModel.nearbyCarParks.firstIndex(of: carPark) {
+                                selectedCarParkIndex = index
+                                selectedCarParkID = String(index)
+                            }
+                        }
+                    }
+                }
+                .presentationDetents([.height(340), .medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
-    }
-    
-    private struct SelectedCarPark: Identifiable {
-        let id = UUID()
-        let mapItem: MKMapItem
     }
     
     private func centreOnUser() {
@@ -155,12 +206,14 @@ struct NearbyMapView: View {
                 )
             )
         }
+        
+        isCenteredOnUser = true
     }
     
     private func searchVisibleArea() {
         guard let region = visibleRegion else { return }
         
-        selectedCarPark = nil
+        selectedCarParkIndex = nil
         selectedCarParkID = nil
         
         let coordinate = Coordinate(
@@ -172,7 +225,15 @@ struct NearbyMapView: View {
             await viewModel.searchNearbyParking(at: coordinate)
         }
     }
+    
+    private func showNearbyParkingList() {
+        selectedCarParkID = nil
+        selectedCarParkIndex = nil
+        isParkingSheetPresented = true
+    }
 }
+
+
 
 #Preview {
     NearbyMapView(
