@@ -37,4 +37,30 @@ struct ManageParkingRestrictionsUseCaseTests {
             try fixture.useCase.validateSign(sign)
         }
     }
+
+    @Test func validateSignThrowsInvalidHoursWhenSignStartsAfterItEnds() {
+        var sign = fixture.twoHourWeekdaySign
+        sign.startMinute = 18 * 60
+        sign.endMinute = 8 * 60
+        #expect(throws: ParkingRestrictionsError.invalidHours) {
+            try fixture.useCase.validateSign(sign)
+        }
+    }
+
+    @Test func validateSignThrowsInvalidHoursWhenSignStartsAndEndsTogether() {
+        var sign = fixture.twoHourWeekdaySign
+        sign.startMinute = 8 * 60
+        sign.endMinute = 8 * 60
+        #expect(throws: ParkingRestrictionsError.invalidHours) {
+            try fixture.useCase.validateSign(sign)
+        }
+    }
+
+    @Test func validateSignThrowsNoDaysSelectedWhenNoDayIsTicked() {
+        var sign = fixture.twoHourWeekdaySign
+        sign.days = []
+        #expect(throws: ParkingRestrictionsError.noDaysSelected) {
+            try fixture.useCase.validateSign(sign)
+        }
+    }
 }
