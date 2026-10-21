@@ -24,6 +24,10 @@ struct RootView: View {
             Tab("Nearby", systemImage: "map.fill") {
                 NearbyMapView(viewModel: locationViewModel)
             }
+            Tab("Can I Park?", systemImage: "signpost.right.fill") {
+                    CanIParkScreen()
+            }
+            
             Tab("Money", systemImage: "dollarsign.circle.fill") {
                 placeholder("Parking costs", owner: "Money")
             }
