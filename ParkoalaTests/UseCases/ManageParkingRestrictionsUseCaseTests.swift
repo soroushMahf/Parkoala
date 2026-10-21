@@ -20,6 +20,7 @@ struct ManageParkingRestrictionsUseCaseTests {
             try fixture.useCase.validateSign(fixture.twoHourWeekdaySign)
         }
     }
+
     @Test(arguments: [15, 30, 60, 120, 180, 240])
     func validateSignAcceptsEverySupportedTimeLimit(minutes: Int) {
         var sign = fixture.twoHourWeekdaySign
