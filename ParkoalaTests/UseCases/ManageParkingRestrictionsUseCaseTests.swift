@@ -63,4 +63,12 @@ struct ManageParkingRestrictionsUseCaseTests {
             try fixture.useCase.validateSign(sign)
         }
     }
+    
+    // Can I park here?
+    @Test func checkParkingAllowsFullLimitWhenArrivingInsideSignHours() throws {
+            let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.tuesday(hour: 10))
+            #expect(verdict == .timeLimitApplies(moveCarBy: fixture.tuesday(hour: 12)))
+        }
+
 }
+
