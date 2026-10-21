@@ -5,6 +5,7 @@ import SwiftUI
 struct SessionDetailView: View {
 
     let session: ParkingSession
+    let locationViewModel: LocationViewModel?
 
     var body: some View {
         List {
@@ -28,9 +29,29 @@ struct SessionDetailView: View {
                 }
             }
 
-            if let levelAndBay = session.location?.levelAndBay, !levelAndBay.isEmpty {
+            if let parkedLocation = session.location {
                 Section("Where you parked") {
-                    Text(levelAndBay)
+
+                    if let levelAndBay = parkedLocation.levelAndBay,
+                       !levelAndBay.isEmpty {
+                        LabeledContent("Level / Bay", value: levelAndBay)
+                    }
+
+                    if parkedLocation.coordinate != nil,
+                       let locationViewModel {
+
+                        NavigationLink {
+                            FindMyCarView(
+                                parkedLocation: parkedLocation,
+                                viewModel: locationViewModel
+                            )
+                        } label: {
+                            Label(
+                                "View Parked Location",
+                                systemImage: "mappin.and.ellipse"
+                            )
+                        }
+                    }
                 }
             }
 
@@ -76,12 +97,21 @@ enum SessionFormat {
 #Preview {
     let start = Date.now.addingTimeInterval(-3 * 60 * 60)
     NavigationStack {
-        SessionDetailView(session: ParkingSession(
-            vehicleID: UUID(),
-            startDate: start,
-            expiryDate: start.addingTimeInterval(2 * 60 * 60),
-            endDate: start.addingTimeInterval(2 * 60 * 60 + 20 * 60),
-            location: ParkingLocation(levelAndBay: "Level 2, Bay 41")
-        ))
+        SessionDetailView(
+            session: ParkingSession(
+                vehicleID: UUID(),
+                startDate: start,
+                expiryDate: start.addingTimeInterval(2 * 60 * 60),
+                endDate: start.addingTimeInterval(2 * 60 * 60 + 20 * 60),
+                location: ParkingLocation(
+                    coordinate: Coordinate(
+                        latitude: -33.8830,
+                        longitude: 151.2000
+                    ),
+                    levelAndBay: "Level 2, Bay 41"
+                )
+            ),
+            locationViewModel: .preview()
+        )
     }
 }

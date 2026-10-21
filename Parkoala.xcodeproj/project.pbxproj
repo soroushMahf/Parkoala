@@ -27,15 +27,9 @@
 			membershipExceptions = (
 				Data/DTOs/.gitkeep,
 				Data/Remote/.gitkeep,
-				Data/Repositories/.gitkeep,
-				Platform/Services/.gitkeep,
 				Presentation/Components/.gitkeep,
-				Presentation/ViewModels/Location/.gitkeep,
 				Presentation/ViewModels/Money/.gitkeep,
-				Presentation/ViewModels/Sessions/.gitkeep,
-				Presentation/Views/Location/.gitkeep,
 				Presentation/Views/Money/.gitkeep,
-				Presentation/Views/Sessions/.gitkeep,
 				SupportingFiles/.gitkeep,
 			);
 			target = FA2883B43081CA7A008443DC /* Parkoala */;
@@ -339,6 +333,7 @@
 				DEVELOPMENT_TEAM = 796TJLYZD2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Parkoala uses your location to save where you parked and help you find your vehicle.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -371,6 +366,7 @@
 				DEVELOPMENT_TEAM = 796TJLYZD2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Parkoala uses your location to save where you parked and help you find your vehicle.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
