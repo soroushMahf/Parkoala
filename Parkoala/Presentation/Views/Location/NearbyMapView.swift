@@ -234,30 +234,8 @@ struct NearbyMapView: View {
 }
 
 
-
 #Preview {
     NearbyMapView(
-        viewModel: LocationViewModel(
-            locationService: LocationService(),
-            locationUseCase: ManageParkingLocationUseCase(
-                sessionRepository: PreviewSessionRepository()
-            )
-        )
+        viewModel: .preview()
     )
-}
-
-// temp repository for preview
-struct PreviewSessionRepository: SessionRepository {
-
-    func activeSession(for vehicleID: UUID) async throws -> ParkingSession? {
-        nil
-    }
-
-    func sessions(inMonthOf date: Date) async throws -> [ParkingSession] {
-        []
-    }
-
-    func save(_ session: ParkingSession) async throws {}
-
-    func delete(id: UUID) async throws {}
 }

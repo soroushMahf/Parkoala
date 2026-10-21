@@ -7,13 +7,19 @@ struct ActiveSessionView: View {
 
     @State private var viewModel: SessionViewModel
     private let historyViewModel: SessionHistoryViewModel?
+    private let locationViewModel: LocationViewModel?
     @State private var isShowingStartSheet = false
     @State private var isConfirmingEnd = false
 
     // Uses the real SwiftData store unless a view model is passed in (previews)
-    init(viewModel: SessionViewModel? = nil, historyViewModel: SessionHistoryViewModel? = nil) {
+    init(
+        viewModel: SessionViewModel? = nil,
+        historyViewModel: SessionHistoryViewModel? = nil,
+        locationViewModel: LocationViewModel? = nil
+    ) {
         _viewModel = State(initialValue: viewModel ?? .live())
         self.historyViewModel = historyViewModel
+        self.locationViewModel = locationViewModel
     }
 
     var body: some View {
@@ -29,7 +35,10 @@ struct ActiveSessionView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        SessionHistoryView(viewModel: historyViewModel ?? .live())
+                        SessionHistoryView(
+                            viewModel: historyViewModel ?? .live(),
+                            locationViewModel: locationViewModel
+                        )
                     } label: {
                         Label("History", systemImage: "clock.arrow.circlepath")
                     }
@@ -51,6 +60,13 @@ struct ActiveSessionView: View {
             }
             .task {
                 await viewModel.load()
+            }
+            .onChange(of: locationViewModel?.parkedLocation) {_, newLocation in
+                guard newLocation != nil else { return }
+                
+                Task {
+                    await viewModel.load()
+                }
             }
         }
     }
@@ -83,6 +99,37 @@ struct ActiveSessionView: View {
                 }
                 .padding()
                 .background(.background.secondary, in: .rect(cornerRadius: 16))
+                
+                if let locationViewModel {
+                    NavigationLink {
+                        SaveParkingLocationView(
+                            vehicleID: session.vehicleID,
+                            viewModel: locationViewModel
+                        )
+                    } label: {
+                        Label(
+                            session.location == nil
+                                ? "Save Parking Location"
+                                : "Update Parking Location",
+                            systemImage: "mappin.and.ellipse"
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    if let parkedLocation = session.location {
+                        NavigationLink {
+                            FindMyCarView(
+                                parkedLocation: parkedLocation,
+                                viewModel: locationViewModel
+                            )
+                        } label: {
+                            Label("Find My Car", systemImage: "car.side")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
 
                 Button("End parking", role: .destructive) {
                     isConfirmingEnd = true

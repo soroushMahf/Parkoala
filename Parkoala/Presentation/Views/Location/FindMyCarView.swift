@@ -94,7 +94,7 @@ struct FindMyCarView: View {
                 )
             }
         }
-        .navigationTitle("Find My Car")
+        .navigationTitle("Parked Location")
         .navigationBarTitleDisplayMode(.inline)
     }
     
@@ -146,13 +146,7 @@ struct FindMyCarView: View {
         FindMyCarView(
             // TEMPORARY as its directly supplying a parked location.
             parkedLocation: sampleParkingLocation,
-
-            viewModel: LocationViewModel(
-                locationService: LocationService(),
-                locationUseCase: ManageParkingLocationUseCase(
-                    sessionRepository: PreviewSessionRepository()
-                )
-            )
+            viewModel: .preview()
         )
     }
 }

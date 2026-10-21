@@ -61,6 +61,9 @@ struct SaveParkingLocationView: View {
         .onAppear {
             viewModel.startLocationUpdates()
         }
+        .onDisappear(){
+            viewModel.stopLocationUpdates()
+        }
         .alert(
             "Location Error",
             isPresented: Binding(
@@ -106,12 +109,7 @@ struct SaveParkingLocationView: View {
     NavigationStack {
         SaveParkingLocationView(
             vehicleID: UUID(),
-            viewModel: LocationViewModel(
-                locationService: LocationService(),
-                locationUseCase: ManageParkingLocationUseCase(
-                    sessionRepository: PreviewSessionRepository()
-                )
-            )
+            viewModel: .preview()
         )
     }
 }

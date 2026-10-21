@@ -5,9 +5,11 @@ import SwiftUI
 struct SessionHistoryView: View {
 
     @State private var viewModel: SessionHistoryViewModel
+    private let locationViewModel: LocationViewModel?
 
-    init(viewModel: SessionHistoryViewModel) {
+    init(viewModel: SessionHistoryViewModel, locationViewModel: LocationViewModel? = nil) {
         _viewModel = State(initialValue: viewModel)
+        self.locationViewModel = locationViewModel
     }
 
     var body: some View {
@@ -35,7 +37,7 @@ struct SessionHistoryView: View {
                         Section(group.month.formatted(.dateTime.month(.wide).year())) {
                             ForEach(group.sessions) { session in
                                 NavigationLink {
-                                    SessionDetailView(session: session)
+                                    SessionDetailView(session: session, locationViewModel: locationViewModel)
                                 } label: {
                                     HistoryRow(session: session)
                                 }
