@@ -25,6 +25,8 @@ struct NearbyMapView: View {
     
     @State private var isCenteredOnUser = false
     
+    @State private var trackingClientID = UUID()
+    
     var body: some View {
         NavigationStack {
             Map(position: $cameraPosition, selection: $selectedCarParkID) {
@@ -118,10 +120,10 @@ struct NearbyMapView: View {
             .navigationTitle("Nearby Parking")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear() {
-                viewModel.startLocationUpdates()
+                viewModel.startLocationUpdates(for: trackingClientID)
             }
             .onDisappear() {
-                viewModel.stopLocationUpdates()
+                viewModel.stopLocationUpdates(for: trackingClientID)
             }
             .onChange(of: selectedCarParkID) { _, newValue in
                 guard let newValue,

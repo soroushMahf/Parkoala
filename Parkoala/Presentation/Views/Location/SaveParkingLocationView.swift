@@ -15,22 +15,47 @@ struct SaveParkingLocationView: View {
     @State private var levelAndBay = ""
     @State private var hasSaved = false
     
+    @State private var trackingClientID = UUID()
+    
     var body: some View {
         Form {
             Section("Parking Location") {
                 if let coordinate = viewModel.currentLocation {
-                    Label("GPS location acquired", systemImage: "location.fill")
-                        .foregroundStyle(.green)
+                    
+                    if viewModel.hasFreshLocation {
+                        Label("GPS location acquired", systemImage: "location.fill")
+                            .foregroundStyle(.green)
+                    } else {
+                        Label("Location needs refreshing", systemImage: "location.slash")
+                            .foregroundStyle(.orange)
+                        
+                        Button("Refresh Location") {
+                            viewModel.requestCurrentLocation()
+                        }
+                    }
                     
                     Text("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
-                    Label("Waiting for your location...", systemImage: "location.slash")
+                    if let locationError = viewModel.locationErrorMessage {
+                        Label(locationError, systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(.red)
+
+                        Button("Try Again") {
+                            viewModel.requestCurrentLocation()
+                        }
+
+                    } else {
+                        Label(
+                            "Waiting for your location...",
+                            systemImage: "location.slash"
+                        )
                         .foregroundStyle(.secondary)
-                    
-                    Button("Get Current Location") {
-                        viewModel.requestCurrentLocation()
+
+                        Button("Get Current Location") {
+                            viewModel.requestCurrentLocation()
+                        }
                     }
                 }
             }
@@ -53,16 +78,23 @@ struct SaveParkingLocationView: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                .disabled(viewModel.currentLocation == nil || viewModel.isLoading || hasSaved)
+                .disabled(!viewModel.hasFreshLocation || viewModel.isLoading || hasSaved)
             }
         }
         .navigationTitle("Save Parking Location")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            viewModel.startLocationUpdates()
+            viewModel.startLocationUpdates(for: trackingClientID)
         }
         .onDisappear(){
-            viewModel.stopLocationUpdates()
+            viewModel.stopLocationUpdates(for: trackingClientID)
+        }
+        .task(id: vehicleID) {
+            await viewModel.loadParkedLocation(vehicleID: vehicleID)
+            
+            if let savedLocation = viewModel.parkedLocation {
+                levelAndBay = savedLocation.levelAndBay ?? ""
+            }
         }
         .alert(
             "Location Error",
@@ -85,6 +117,11 @@ struct SaveParkingLocationView: View {
     }
     
     private func saveLocation() async {
+        guard viewModel.hasFreshLocation else {
+            viewModel.requestCurrentLocation()
+            return
+        }
+        
         guard let coordinate = viewModel.currentLocation else {
             return
         }
@@ -104,7 +141,6 @@ struct SaveParkingLocationView: View {
     }
 }
 
-// using the same temporary preview session repository from NearbyMapView to preview
 #Preview {
     NavigationStack {
         SaveParkingLocationView(

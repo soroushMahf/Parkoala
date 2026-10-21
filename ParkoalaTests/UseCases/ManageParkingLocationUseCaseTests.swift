@@ -143,4 +143,50 @@ struct ManageParkingLocationUseCaseTests {
 
         #expect(result == location)
     }
+    
+    // Test 5: Only selected vehicle updates when location is saved
+    @Test("Saving a location only updates the selected vehicle")
+    func saveLocationOnlyUpdatesSelectedVehicle() async throws {
+        let repository = MockSessionRepository()
+        let useCase = ManageParkingLocationUseCase(
+            sessionRepository: repository
+        )
+
+        let vehicleA = UUID()
+        let vehicleB = UUID()
+        let start = Date.now
+
+        repository.sessions = [
+            ParkingSession(
+                vehicleID: vehicleA,
+                startDate: start,
+                expiryDate: start.addingTimeInterval(3600)
+            ),
+            ParkingSession(
+                vehicleID: vehicleB,
+                startDate: start,
+                expiryDate: start.addingTimeInterval(3600)
+            )
+        ]
+
+        let location = ParkingLocation(
+            coordinate: Coordinate(
+                latitude: -33.8830,
+                longitude: 151.2000
+            ),
+            levelAndBay: "Level B2, Bay 15"
+        )
+
+        try await useCase.saveLocation(
+            vehicleID: vehicleA,
+            location: location
+        )
+
+        let sessionA = try await repository.activeSession(for: vehicleA)
+        let sessionB = try await repository.activeSession(for: vehicleB)
+
+        #expect(sessionA?.location == location)
+        #expect(sessionB?.location == nil)
+        #expect(repository.sessions.count == 2)
+    }
 }

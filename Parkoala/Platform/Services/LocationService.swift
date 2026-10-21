@@ -18,12 +18,12 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     
     private(set) var authorizationStatus: CLAuthorizationStatus
     private(set) var currentLocation: Coordinate?
+    private(set) var locationTimeStamp: Date?
     private(set) var errorMessage: String?
     
     private var isTracking = false
-    
-    private var shouldStartTrackingAfterAuthorization = false
-    
+    private var trackingClients: Set<UUID> = []
+        
     override init() {
         authorizationStatus = manager.authorizationStatus
         super.init()
@@ -49,12 +49,10 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     }
     
     // Starts continuous location updates while using viewing the map
-    func startUpdatingLocation() {
+    func startUpdatingLocation(for clientID: UUID) {
+        trackingClients.insert(clientID)
+        
         guard isAuthorized else {
-            if authorizationStatus == .notDetermined {
-                shouldStartTrackingAfterAuthorization = true
-            }
-            
             handleUnauthorized()
             return
         }
@@ -67,10 +65,12 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     }
     
     // Stops continuous location updates when they're no longer needed
-    func stopUpdatingLocation() {
-        guard isTracking else { return }
+    func stopUpdatingLocation(for clientID: UUID) {
+        trackingClients.remove(clientID)
         
-        shouldStartTrackingAfterAuthorization = false
+        guard trackingClients.isEmpty else { return }
+        
+        guard isTracking else { return }
         
         manager.stopUpdatingLocation()
         isTracking = false
@@ -104,12 +104,13 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
             longitude: location.coordinate.longitude
         )
         
+        locationTimeStamp = location.timestamp
         errorMessage = nil
     }
     
     // Handles location retrieval failures
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Location error: \(error.localizedDescription)")
+        errorMessage = error.localizedDescription
     }
     
     // Responds to changes in location permissions
@@ -119,19 +120,30 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         if isAuthorized {
             errorMessage = nil
             
-            if shouldStartTrackingAfterAuthorization {
-                shouldStartTrackingAfterAuthorization = false
-                startUpdatingLocation()
+            if !trackingClients.isEmpty {
+                isTracking = false
+                startTrackingIfNeeded()
             }
         } else {
-            stopUpdatingLocation()
+            manager.stopUpdatingLocation()
+            isTracking = false
             currentLocation = nil
+            locationTimeStamp = nil
             
             if authorizationStatus == .denied || authorizationStatus == .restricted {
-                shouldStartTrackingAfterAuthorization = false
                 errorMessage = ParkingLocationError.permissionDenied.localizedDescription
             }
         }
+    }
+    
+    private func startTrackingIfNeeded() {
+        guard isAuthorized, !trackingClients.isEmpty, !isTracking else {
+            return
+        }
+        
+        errorMessage = nil
+        manager.startUpdatingLocation()
+        isTracking = true
     }
 }
 

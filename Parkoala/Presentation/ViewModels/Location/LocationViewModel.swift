@@ -27,8 +27,22 @@ final class LocationViewModel {
     private(set) var nearbyCarParks: [MKMapItem] = []
     private(set) var isSearching = false
     
+    var locationErrorMessage: String? {
+        locationService.errorMessage
+    }
+    
     var currentLocation: Coordinate? {
         locationService.currentLocation
+    }
+    
+    var hasFreshLocation: Bool {
+        guard let timeStamp = locationService.locationTimeStamp, currentLocation != nil else {
+            return false
+        }
+        
+        let age = Date.now.timeIntervalSince(timeStamp)
+        
+        return age >= 0 && age <= 30
     }
     
     var authorizatonStatus: CLAuthorizationStatus {
@@ -77,13 +91,13 @@ final class LocationViewModel {
     }
     
     // starts continuous uodates when the map is visible
-    func startLocationUpdates() {
-        locationService.startUpdatingLocation()
+    func startLocationUpdates(for clientID: UUID) {
+        locationService.startUpdatingLocation(for: clientID)
     }
     
     // stops continuous updates when the map is no longer visible
-    func stopLocationUpdates() {
-        locationService.stopUpdatingLocation()
+    func stopLocationUpdates(for clientID: UUID) {
+        locationService.stopUpdatingLocation(for: clientID)
     }
     
     // requesting a single GPS reading

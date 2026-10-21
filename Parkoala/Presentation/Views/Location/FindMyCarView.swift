@@ -10,14 +10,13 @@ import MapKit
 
 struct FindMyCarView: View {
     
-    // ParkingLocation is passed directly as a temporary parking location
-    // This will be removed once UC1 is integrated to retrieve the parked
-    // location through ManageParkingLocationUseCase using the active vehicle ID
     let parkedLocation: ParkingLocation
     
     let viewModel: LocationViewModel
     
     @State private var cameraPosition: MapCameraPosition = .automatic
+    
+    @State private var trackingClientID = UUID()
     
     private var parkedCoordinate: CLLocationCoordinate2D? {
         guard let coordinate = parkedLocation.coordinate else {
@@ -60,10 +59,10 @@ struct FindMyCarView: View {
                 }
                 .onAppear {
                     centreOnCar()
-                    viewModel.startLocationUpdates()
+                    viewModel.startLocationUpdates(for: trackingClientID)
                 }
                 .onDisappear {
-                    viewModel.stopLocationUpdates()
+                    viewModel.stopLocationUpdates(for: trackingClientID)
                 }
                 
                 VStack(alignment: .leading, spacing: 12) {
@@ -125,28 +124,6 @@ struct FindMyCarView: View {
                 MKLaunchOptionsDirectionsModeKey:
                     MKLaunchOptionsDirectionsModeWalking
             ]
-        )
-    }
-}
-
-#Preview {
-
-    // TEMPORARY PREVIEW DATA
-    // need to remove this sample location when real sessions are integrated
-    
-    let sampleParkingLocation = ParkingLocation(
-        coordinate: Coordinate(
-            latitude: -33.8830,
-            longitude: 151.2000
-        ),
-        levelAndBay: "Level B2, Bay 15"
-    )
-
-    NavigationStack {
-        FindMyCarView(
-            // TEMPORARY as its directly supplying a parked location.
-            parkedLocation: sampleParkingLocation,
-            viewModel: .preview()
         )
     }
 }
