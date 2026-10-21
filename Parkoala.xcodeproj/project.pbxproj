@@ -27,10 +27,8 @@
 			membershipExceptions = (
 				Data/DTOs/.gitkeep,
 				Data/Remote/.gitkeep,
-				Data/Repositories/.gitkeep,
 				Presentation/Components/.gitkeep,
 				Presentation/ViewModels/Money/.gitkeep,
-				Presentation/ViewModels/Sessions/.gitkeep,
 				Presentation/Views/Money/.gitkeep,
 				SupportingFiles/.gitkeep,
 			);

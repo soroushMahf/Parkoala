@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum ParkingLocationError: Error, LocalizedError {
+enum ParkingLocationError: Error, LocalizedError, Equatable {
     
     case invalidCoordinates
     case locationUnavailable
