@@ -84,6 +84,21 @@ struct ManageParkingSessionUseCase {
         return try await sessionRepository.activeSession(for: vehicle.id)
     }
 
+    // Finished sessions from the last few months, newest first
+    func recentSessions(monthsBack: Int = 3) async throws -> [ParkingSession] {
+        let calendar = Calendar.current
+        var sessions: [ParkingSession] = []
+
+        for offset in 0..<monthsBack {
+            guard let month = calendar.date(byAdding: .month, value: -offset, to: now()) else { continue }
+            sessions += try await sessionRepository.sessions(inMonthOf: month)
+        }
+
+        return sessions
+            .filter { !$0.isActive }
+            .sorted { $0.startDate > $1.startDate }
+    }
+
     // The app tracks one car, so a default one is made the first time it is needed
     private func defaultVehicle() async throws -> Vehicle {
         if let vehicle = try await vehicleRepository.defaultVehicle() {

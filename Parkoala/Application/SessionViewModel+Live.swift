@@ -1,17 +1,30 @@
-// Builds the real Park tab view model with the shared SwiftData store.
+// Builds the real Sessions view models with the shared SwiftData store.
 // Kept here so the view model itself never imports SwiftData.
 
 import Foundation
 import SwiftData
 
-extension SessionViewModel {
+extension ManageParkingSessionUseCase {
 
-    static func live() -> SessionViewModel {
+    static func live() -> ManageParkingSessionUseCase {
         let context = PersistenceController.shared.container.mainContext
-        let useCase = ManageParkingSessionUseCase(
+        return ManageParkingSessionUseCase(
             sessionRepository: SwiftDataSessionRepository(context: context),
             vehicleRepository: SwiftDataVehicleRepository(context: context)
         )
-        return SessionViewModel(useCase: useCase)
+    }
+}
+
+extension SessionViewModel {
+
+    static func live() -> SessionViewModel {
+        SessionViewModel(useCase: .live())
+    }
+}
+
+extension SessionHistoryViewModel {
+
+    static func live() -> SessionHistoryViewModel {
+        SessionHistoryViewModel(useCase: .live())
     }
 }

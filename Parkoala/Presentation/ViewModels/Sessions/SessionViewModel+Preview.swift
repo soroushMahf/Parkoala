@@ -19,15 +19,44 @@ extension SessionViewModel {
     }
 }
 
+extension SessionHistoryViewModel {
+
+    static func preview(withSamples: Bool) -> SessionHistoryViewModel {
+        let sessions = InMemorySessionRepository()
+        let vehicles = InMemoryVehicleRepository()
+
+        if withSamples {
+            let vehicleID = UUID()
+            for daysAgo in [1, 3, 8, 35] {
+                let start = Date.now.addingTimeInterval(-Double(daysAgo) * 24 * 60 * 60)
+                let overstayed = daysAgo == 3
+                sessions.add(ParkingSession(
+                    vehicleID: vehicleID,
+                    startDate: start,
+                    expiryDate: start.addingTimeInterval(2 * 60 * 60),
+                    endDate: start.addingTimeInterval(overstayed ? 2.5 * 60 * 60 : 90 * 60)
+                ))
+            }
+        }
+
+        let useCase = ManageParkingSessionUseCase(sessionRepository: sessions, vehicleRepository: vehicles)
+        return SessionHistoryViewModel(useCase: useCase)
+    }
+}
+
 private final class InMemorySessionRepository: SessionRepository {
     private var sessions: [ParkingSession] = []
+
+    func add(_ session: ParkingSession) {
+        sessions.append(session)
+    }
 
     func activeSession(for vehicleID: UUID) async throws -> ParkingSession? {
         sessions.first { $0.vehicleID == vehicleID && $0.isActive }
     }
 
     func sessions(inMonthOf date: Date) async throws -> [ParkingSession] {
-        sessions
+        sessions.filter { Calendar.current.isDate($0.startDate, equalTo: date, toGranularity: .month) }
     }
 
     func save(_ session: ParkingSession) async throws {

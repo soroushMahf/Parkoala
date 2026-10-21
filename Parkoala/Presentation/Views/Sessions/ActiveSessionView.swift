@@ -6,12 +6,14 @@ import SwiftUI
 struct ActiveSessionView: View {
 
     @State private var viewModel: SessionViewModel
+    private let historyViewModel: SessionHistoryViewModel?
     @State private var isShowingStartSheet = false
     @State private var isConfirmingEnd = false
 
     // Uses the real SwiftData store unless a view model is passed in (previews)
-    init(viewModel: SessionViewModel? = nil) {
+    init(viewModel: SessionViewModel? = nil, historyViewModel: SessionHistoryViewModel? = nil) {
         _viewModel = State(initialValue: viewModel ?? .live())
+        self.historyViewModel = historyViewModel
     }
 
     var body: some View {
@@ -24,6 +26,15 @@ struct ActiveSessionView: View {
                 }
             }
             .navigationTitle("Park")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        SessionHistoryView(viewModel: historyViewModel ?? .live())
+                    } label: {
+                        Label("History", systemImage: "clock.arrow.circlepath")
+                    }
+                }
+            }
             .sheet(isPresented: $isShowingStartSheet) {
                 StartParkingSheet(viewModel: viewModel)
             }
