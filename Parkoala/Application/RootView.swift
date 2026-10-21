@@ -15,7 +15,7 @@ struct RootView: View {
     var body: some View {
         TabView {
             Tab("Park", systemImage: "car.fill") {
-                placeholder("Parking session", owner: "Sessions")
+                ActiveSessionView()
             }
             Tab("Nearby", systemImage: "map.fill") {
 //                placeholder("Nearby car parks", owner: "Location")
