@@ -20,7 +20,8 @@ extension SessionViewModel {
     static func live() -> SessionViewModel {
         SessionViewModel(
             useCase: .live(),
-            alertsUseCase: .live()
+            alertsUseCase: .live(),
+            liveActivityService: ParkingLiveActivityService()
         )
     }
 }

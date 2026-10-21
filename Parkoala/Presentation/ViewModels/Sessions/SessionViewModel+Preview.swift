@@ -22,6 +22,19 @@ private final class PreviewNotificationService: NotificationService {
     }
 }
 
+private final class PreviewLiveActivityService: LiveActivityService {
+    func startActivity(
+        sessionID: UUID,
+        expiryDate: Date
+    ) async throws {
+        // Do nothing in previews
+    }
+
+    func endActivity() async {
+        // Do nothing in previews
+    }
+}
+
 extension SessionViewModel {
 
     static func preview(parkedFor duration: TimeInterval? = nil) -> SessionViewModel {
@@ -35,7 +48,8 @@ extension SessionViewModel {
         )
         let viewModel = SessionViewModel(
             useCase: useCase,
-            alertsUseCase: alertsUseCase
+            alertsUseCase: alertsUseCase,
+            liveActivityService: PreviewLiveActivityService()
         )
 
         if let duration {

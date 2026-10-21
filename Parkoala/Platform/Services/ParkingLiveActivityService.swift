@@ -17,6 +17,12 @@ final class ParkingLiveActivityService: LiveActivityService {
         sessionID: UUID,
         expiryDate: Date
     ) async throws {
+
+        print(
+            "Live Activities enabled:",
+            ActivityAuthorizationInfo().areActivitiesEnabled
+        )
+
         let attributes = ParkingActivityAttributes(
             sessionID: sessionID
         )
@@ -34,6 +40,11 @@ final class ParkingLiveActivityService: LiveActivityService {
         currentActivity = try Activity.request(
             attributes: attributes,
             content: content
+        )
+
+        print(
+            "Live Activity started:",
+            currentActivity?.id ?? "nil"
         )
     }
 

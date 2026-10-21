@@ -9,6 +9,7 @@ final class SessionViewModel {
 
     private let useCase: ManageParkingSessionUseCase
     private let alertsUseCase: ManageParkingAlertsUseCase
+    private let liveActivityService: LiveActivityService
 
     private(set) var activeSession: ParkingSession?
     private(set) var isLoading = false
@@ -16,10 +17,12 @@ final class SessionViewModel {
 
     init(
         useCase: ManageParkingSessionUseCase,
-        alertsUseCase: ManageParkingAlertsUseCase
+        alertsUseCase: ManageParkingAlertsUseCase,
+        liveActivityService: LiveActivityService
     ) {
         self.useCase = useCase
         self.alertsUseCase = alertsUseCase
+        self.liveActivityService = liveActivityService
     }
 
     func load() async {
@@ -43,8 +46,16 @@ final class SessionViewModel {
                     expiryDate: session.expiryDate
                 )
             } catch {
-                // Parking session still starts even if alerts cannot be scheduled.
                 print("Failed to schedule parking alerts: \(error)")
+            }
+
+            do {
+                try await self.liveActivityService.startActivity(
+                    sessionID: session.id,
+                    expiryDate: session.expiryDate
+                )
+            } catch {
+                print("Failed to start Live Activity: \(error)")
             }
         }
     }
@@ -54,6 +65,8 @@ final class SessionViewModel {
             _ = try await self.useCase.endSession()
 
             self.alertsUseCase.cancelExpiryReminders()
+
+            await self.liveActivityService.endActivity()
 
             self.activeSession = nil
         }
