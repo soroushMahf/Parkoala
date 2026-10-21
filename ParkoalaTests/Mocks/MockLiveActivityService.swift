@@ -1,3 +1,11 @@
+//
+//  MockLiveActivityService.swift
+//  Parkoala
+//
+//  Created by Đức Anh on 22/10/26.
+//
+
+
 import Foundation
 @testable import Parkoala
 

@@ -8,6 +8,7 @@ final class SessionViewModelTests: XCTestCase {
     private var vehicles: MockVehicleRepository!
     private var viewModel: SessionViewModel!
     private var notificationService: MockNotificationService!
+    private var liveActivityService: MockLiveActivityService!
 
     override func setUp() {
         super.setUp()
@@ -15,6 +16,7 @@ final class SessionViewModelTests: XCTestCase {
         sessions = MockSessionRepository()
         vehicles = MockVehicleRepository()
         notificationService = MockNotificationService()
+        liveActivityService = MockLiveActivityService()
 
         let useCase = ManageParkingSessionUseCase(
             sessionRepository: sessions,
@@ -27,7 +29,8 @@ final class SessionViewModelTests: XCTestCase {
 
         viewModel = SessionViewModel(
             useCase: useCase,
-            alertsUseCase: alertsUseCase
+            alertsUseCase: alertsUseCase,
+            liveActivityService: liveActivityService
         )
     }
 
@@ -67,11 +70,46 @@ final class SessionViewModelTests: XCTestCase {
             ),
             alertsUseCase: ManageParkingAlertsUseCase(
                 notificationService: notificationService
-            )
+            ),
+            liveActivityService: liveActivityService
         )
         
         await relaunched.load()
 
         XCTAssertEqual(relaunched.activeSession, saved)
+    }
+    
+    func test_startSession_startsLiveActivity() async {
+        let duration: TimeInterval = 30 * 60
+
+        let success = await viewModel.startSession(
+            duration: duration
+        )
+
+        XCTAssertTrue(success)
+        XCTAssertEqual(liveActivityService.startCallCount, 1)
+
+        XCTAssertEqual(
+            liveActivityService.startedSessionID,
+            viewModel.activeSession?.id
+        )
+
+        XCTAssertEqual(
+            liveActivityService.startedExpiryDate,
+            viewModel.activeSession?.expiryDate
+        )
+    }
+    
+    func test_endSession_endsLiveActivity() async {
+        _ = await viewModel.startSession(
+            duration: 30 * 60
+        )
+
+        await viewModel.endSession()
+
+        XCTAssertEqual(
+            liveActivityService.endCallCount,
+            1
+        )
     }
 }
