@@ -22,11 +22,12 @@ final class EnterParkingSignViewModel {
     @ObservationIgnored private let useCase: ManageParkingRestrictionsUseCase
 
     init(
-        restriction: ParkingRestriction = .twoHourWeekdaySign,
-        useCase: ManageParkingRestrictionsUseCase = ManageParkingRestrictionsUseCase()
+        restriction: ParkingRestriction? = nil,
+        useCase: ManageParkingRestrictionsUseCase? = nil
     ) {
-        self.restriction = restriction
-        self.useCase = useCase
+        // Defaults are set here, inside the main actor, to avoid Swift 6 warnings.
+        self.restriction = restriction ?? .twoHourWeekdaySign
+        self.useCase = useCase ?? ManageParkingRestrictionsUseCase()
     }
 
     /// Returns the sign when it can be used; otherwise sets `problemMessage` and returns nil.
