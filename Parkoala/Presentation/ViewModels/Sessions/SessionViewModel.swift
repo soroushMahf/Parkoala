@@ -8,13 +8,18 @@ import Foundation
 final class SessionViewModel {
 
     private let useCase: ManageParkingSessionUseCase
+    private let alertsUseCase: ManageParkingAlertsUseCase
 
     private(set) var activeSession: ParkingSession?
     private(set) var isLoading = false
     var errorMessage: String?
 
-    init(useCase: ManageParkingSessionUseCase) {
+    init(
+        useCase: ManageParkingSessionUseCase,
+        alertsUseCase: ManageParkingAlertsUseCase
+    ) {
         self.useCase = useCase
+        self.alertsUseCase = alertsUseCase
     }
 
     func load() async {
@@ -27,13 +32,29 @@ final class SessionViewModel {
     @discardableResult
     func startSession(duration: TimeInterval) async -> Bool {
         await run {
-            self.activeSession = try await self.useCase.startSession(duration: duration)
+            let session = try await self.useCase.startSession(
+                duration: duration
+            )
+
+            self.activeSession = session
+
+            do {
+                try await self.alertsUseCase.scheduleExpiryReminders(
+                    expiryDate: session.expiryDate
+                )
+            } catch {
+                // Parking session still starts even if alerts cannot be scheduled.
+                print("Failed to schedule parking alerts: \(error)")
+            }
         }
     }
 
     func endSession() async {
         await run {
             _ = try await self.useCase.endSession()
+
+            self.alertsUseCase.cancelExpiryReminders()
+
             self.activeSession = nil
         }
     }

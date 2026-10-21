@@ -18,7 +18,10 @@ extension ManageParkingSessionUseCase {
 extension SessionViewModel {
 
     static func live() -> SessionViewModel {
-        SessionViewModel(useCase: .live())
+        SessionViewModel(
+            useCase: .live(),
+            alertsUseCase: .live()
+        )
     }
 }
 
@@ -26,5 +29,14 @@ extension SessionHistoryViewModel {
 
     static func live() -> SessionHistoryViewModel {
         SessionHistoryViewModel(useCase: .live())
+    }
+}
+
+extension ManageParkingAlertsUseCase {
+
+    static func live() -> ManageParkingAlertsUseCase {
+        ManageParkingAlertsUseCase(
+            notificationService: UserNotificationService()
+        )
     }
 }

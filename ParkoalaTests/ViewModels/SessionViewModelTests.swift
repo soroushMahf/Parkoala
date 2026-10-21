@@ -7,16 +7,28 @@ final class SessionViewModelTests: XCTestCase {
     private var sessions: MockSessionRepository!
     private var vehicles: MockVehicleRepository!
     private var viewModel: SessionViewModel!
+    private var notificationService: MockNotificationService!
 
     override func setUp() {
         super.setUp()
+
         sessions = MockSessionRepository()
         vehicles = MockVehicleRepository()
+        notificationService = MockNotificationService()
+
         let useCase = ManageParkingSessionUseCase(
             sessionRepository: sessions,
             vehicleRepository: vehicles
         )
-        viewModel = SessionViewModel(useCase: useCase)
+
+        let alertsUseCase = ManageParkingAlertsUseCase(
+            notificationService: notificationService
+        )
+
+        viewModel = SessionViewModel(
+            useCase: useCase,
+            alertsUseCase: alertsUseCase
+        )
     }
 
     func test_startSession_setsActiveSession_whenItSucceeds() async {
@@ -48,10 +60,16 @@ final class SessionViewModelTests: XCTestCase {
         await viewModel.startSession(duration: 60 * 60)
         let saved = viewModel.activeSession
 
-        let relaunched = SessionViewModel(useCase: ManageParkingSessionUseCase(
-            sessionRepository: sessions,
-            vehicleRepository: vehicles
-        ))
+        let relaunched = SessionViewModel(
+            useCase: ManageParkingSessionUseCase(
+                sessionRepository: sessions,
+                vehicleRepository: vehicles
+            ),
+            alertsUseCase: ManageParkingAlertsUseCase(
+                notificationService: notificationService
+            )
+        )
+        
         await relaunched.load()
 
         XCTAssertEqual(relaunched.activeSession, saved)
