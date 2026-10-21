@@ -9,7 +9,7 @@
 import ActivityKit
 import Foundation
 
-struct ParkingActivityAttributes: ActivityAttributes {
+nonisolated struct ParkingActivityAttributes: ActivityAttributes {
 
     struct ContentState: Codable, Hashable {
         let expiryDate: Date
