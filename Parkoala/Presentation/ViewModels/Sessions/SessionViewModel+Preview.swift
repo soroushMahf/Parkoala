@@ -2,6 +2,26 @@
 
 import Foundation
 
+private final class PreviewNotificationService: NotificationService {
+
+    func requestAuthorization() async throws -> Bool {
+        true
+    }
+
+    func scheduleNotification(
+        id: String,
+        title: String,
+        body: String,
+        fireDate: Date
+    ) async throws {
+        // Do nothing in previews
+    }
+
+    func cancelNotifications(ids: [String]) {
+        // Do nothing in previews
+    }
+}
+
 extension SessionViewModel {
 
     static func preview(parkedFor duration: TimeInterval? = nil) -> SessionViewModel {
@@ -10,7 +30,13 @@ extension SessionViewModel {
             sessionRepository: sessions,
             vehicleRepository: InMemoryVehicleRepository()
         )
-        let viewModel = SessionViewModel(useCase: useCase)
+        let alertsUseCase = ManageParkingAlertsUseCase(
+            notificationService: PreviewNotificationService()
+        )
+        let viewModel = SessionViewModel(
+            useCase: useCase,
+            alertsUseCase: alertsUseCase
+        )
 
         if let duration {
             Task { await viewModel.startSession(duration: duration) }
