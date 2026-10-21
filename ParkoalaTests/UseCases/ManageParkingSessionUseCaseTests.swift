@@ -91,6 +91,38 @@ final class ManageParkingSessionUseCaseTests: XCTestCase {
         }
     }
 
+    func test_recentSessions_returnsOnlyFinishedSessions_newestFirst() async throws {
+        let vehicleID = UUID()
+        let older = finishedSession(vehicleID: vehicleID, daysAgo: 5)
+        let newer = finishedSession(vehicleID: vehicleID, daysAgo: 1)
+        let running = ParkingSession(vehicleID: vehicleID, startDate: fixedNow, expiryDate: fixedNow.addingTimeInterval(3600))
+        sessions.sessions = [older, running, newer]
+
+        let recent = try await useCase.recentSessions()
+
+        XCTAssertEqual(recent, [newer, older])
+    }
+
+    func test_recentSessions_leavesOutSessionsOlderThanThreeMonths() async throws {
+        let recentOne = finishedSession(vehicleID: UUID(), daysAgo: 10)
+        let oldOne = finishedSession(vehicleID: UUID(), daysAgo: 150)
+        sessions.sessions = [recentOne, oldOne]
+
+        let recent = try await useCase.recentSessions()
+
+        XCTAssertEqual(recent, [recentOne])
+    }
+
+    private func finishedSession(vehicleID: UUID, daysAgo: Double) -> ParkingSession {
+        let start = fixedNow.addingTimeInterval(-daysAgo * 24 * 60 * 60)
+        return ParkingSession(
+            vehicleID: vehicleID,
+            startDate: start,
+            expiryDate: start.addingTimeInterval(2 * 60 * 60),
+            endDate: start.addingTimeInterval(60 * 60)
+        )
+    }
+
     // Checks that the work throws exactly the expected error
     private func assertThrows<E: Error & Equatable>(
         _ expected: E,
