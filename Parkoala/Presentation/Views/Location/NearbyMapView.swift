@@ -25,6 +25,7 @@ struct NearbyMapView: View {
     
     @State private var isCenteredOnUser = false
     
+    @State private var isShowingNoResults = false
     @State private var trackingClientID = UUID()
     
     var body: some View {
@@ -157,6 +158,11 @@ struct NearbyMapView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
+            .alert("No Parking Found", isPresented: $isShowingNoResults) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("No parking facilities were found in this area. Try searching another location")
+            }
             .sheet(isPresented: $isParkingSheetPresented, onDismiss: {
                 selectedCarParkID = nil
                 selectedCarParkIndex = nil
@@ -214,17 +220,25 @@ struct NearbyMapView: View {
     
     private func searchVisibleArea() {
         guard let region = visibleRegion else { return }
-        
-        selectedCarParkIndex = nil
-        selectedCarParkID = nil
-        
+
         let coordinate = Coordinate(
             latitude: region.center.latitude,
             longitude: region.center.longitude
         )
-        
+
         Task {
             await viewModel.searchNearbyParking(at: coordinate)
+
+            guard viewModel.errorMessage == nil else { return }
+
+            selectedCarParkID = nil
+            selectedCarParkIndex = nil
+
+            if !viewModel.nearbyCarParks.isEmpty {
+                isParkingSheetPresented = true
+            } else {
+                isShowingNoResults = true
+            }
         }
     }
     
