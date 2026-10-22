@@ -21,7 +21,8 @@ extension SessionViewModel {
         SessionViewModel(
             useCase: .live(),
             alertsUseCase: .live(),
-            liveActivityService: ParkingLiveActivityService()
+            liveActivityService: ParkingLiveActivityService(),
+            costUseCase: .live()
         )
     }
 }
@@ -39,5 +40,22 @@ extension ManageParkingAlertsUseCase {
         ManageParkingAlertsUseCase(
             notificationService: UserNotificationService()
         )
+    }
+}
+
+extension CalculateParkingCostsUseCase {
+
+    static func live() -> CalculateParkingCostsUseCase {
+        let context = PersistenceController.shared.container.mainContext
+        return CalculateParkingCostsUseCase(
+            sessionRepository: SwiftDataSessionRepository(context: context)
+        )
+    }
+}
+
+extension MoneyViewModel {
+
+    static func live() -> MoneyViewModel {
+        MoneyViewModel(sessionUseCase: .live(), costUseCase: .live())
     }
 }

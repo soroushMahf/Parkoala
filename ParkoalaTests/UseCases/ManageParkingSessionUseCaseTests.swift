@@ -66,6 +66,13 @@ final class ManageParkingSessionUseCaseTests: XCTestCase {
         }
     }
 
+    func test_startSession_storesPlannedRate_whenProvided() async throws {
+        let session = try await useCase.startSession(duration: 60 * 60, plannedRate: .flat(price: 15))
+
+        XCTAssertEqual(session.plannedRate, .flat(price: 15))
+        XCTAssertEqual(sessions.sessions.first?.plannedRate, .flat(price: 15))
+    }
+
     func test_endSession_setsEndDate_whenSessionIsRunning() async throws {
         _ = try await useCase.startSession(duration: 60 * 60)
 

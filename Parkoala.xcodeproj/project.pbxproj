@@ -74,6 +74,8 @@
 				Presentation/Components/.gitkeep,
 				Presentation/ViewModels/Money/.gitkeep,
 				Presentation/Views/Money/.gitkeep,
+				Data/DTOs/.gitkeep,
+				Data/Remote/.gitkeep,
 				SupportingFiles/.gitkeep,
 			);
 			target = FA2883B43081CA7A008443DC /* Parkoala */;

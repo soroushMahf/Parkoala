@@ -29,6 +29,7 @@ final class CarParkSearchService {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = "parking"
         request.region = region
+        request.regionPriority = .required
         request.resultTypes = .pointOfInterest
         
         let search = MKLocalSearch(request: request)

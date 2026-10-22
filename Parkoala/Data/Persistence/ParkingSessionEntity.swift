@@ -24,6 +24,13 @@ final class ParkingSessionEntity {
     var endDate: Date?
     
     var cost: Decimal?
+    var actualCost: Decimal?
+    
+    // rate entered when parking started, if the user already knew it
+    var rateKind: String?
+    var ratePrice: Decimal?
+    var rateEnterBeforeMinute: Int?
+    var rateLeaveAfterMinute: Int?
     
     // parking location
     var latitude: Double?
@@ -46,6 +53,24 @@ final class ParkingSessionEntity {
         self.endDate = session.endDate
         
         self.cost = session.cost
+        self.actualCost = session.actualCost
+        
+        // rate entered when parking started
+        switch session.plannedRate {
+        case let .hourly(price):
+            self.rateKind = "hourly"
+            self.ratePrice = price
+        case let .flat(price):
+            self.rateKind = "flat"
+            self.ratePrice = price
+        case let .earlyBird(price, enterBefore, leaveAfter):
+            self.rateKind = "earlyBird"
+            self.ratePrice = price
+            self.rateEnterBeforeMinute = enterBefore
+            self.rateLeaveAfterMinute = leaveAfter
+        case .freePeriod, nil:
+            self.rateKind = nil
+        }
         
         // parking location
         self.latitude = session.location?.coordinate?.latitude
@@ -128,6 +153,27 @@ final class ParkingSessionEntity {
             restriction = nil
         }
 
+        let plannedRate: RateRule?
+
+        switch rateKind {
+        case "hourly":
+            plannedRate = ratePrice.map { .hourly(price: $0) }
+        case "flat":
+            plannedRate = ratePrice.map { .flat(price: $0) }
+        case "earlyBird":
+            if let ratePrice, let rateEnterBeforeMinute, let rateLeaveAfterMinute {
+                plannedRate = .earlyBird(
+                    price: ratePrice,
+                    enterBeforeMinute: rateEnterBeforeMinute,
+                    leaveAfterMinute: rateLeaveAfterMinute
+                )
+            } else {
+                plannedRate = nil
+            }
+        default:
+            plannedRate = nil
+        }
+
         return ParkingSession(
             id: id,
             vehicleID: vehicleID,
@@ -136,7 +182,9 @@ final class ParkingSessionEntity {
             endDate: endDate,
             restriction: restriction,
             location: location,
-            cost: cost
+            plannedRate: plannedRate,
+            cost: cost,
+            actualCost: actualCost
         )
     }
     

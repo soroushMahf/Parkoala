@@ -25,8 +25,8 @@ final class CanIParkViewModel {
 
     @ObservationIgnored private let useCase: ManageParkingRestrictionsUseCase
 
-    init(useCase: ManageParkingRestrictionsUseCase = ManageParkingRestrictionsUseCase()) {
-        self.useCase = useCase
+    init(useCase: ManageParkingRestrictionsUseCase? = nil) { 
+        self.useCase = useCase ?? ManageParkingRestrictionsUseCase()
     }
 
     /// Checks the sign for a driver parking at `arrival` (now, unless a test passes a time).
