@@ -49,7 +49,8 @@ extension SessionViewModel {
         let viewModel = SessionViewModel(
             useCase: useCase,
             alertsUseCase: alertsUseCase,
-            liveActivityService: PreviewLiveActivityService()
+            liveActivityService: PreviewLiveActivityService(),
+            costUseCase: CalculateParkingCostsUseCase(sessionRepository: sessions)
         )
 
         if let duration {

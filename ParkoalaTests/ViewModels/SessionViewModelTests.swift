@@ -30,7 +30,8 @@ final class SessionViewModelTests: XCTestCase {
         viewModel = SessionViewModel(
             useCase: useCase,
             alertsUseCase: alertsUseCase,
-            liveActivityService: liveActivityService
+            liveActivityService: liveActivityService,
+            costUseCase: CalculateParkingCostsUseCase(sessionRepository: sessions)
         )
     }
 
@@ -71,7 +72,8 @@ final class SessionViewModelTests: XCTestCase {
             alertsUseCase: ManageParkingAlertsUseCase(
                 notificationService: notificationService
             ),
-            liveActivityService: liveActivityService
+            liveActivityService: liveActivityService,
+            costUseCase: CalculateParkingCostsUseCase(sessionRepository: sessions)
         )
         
         await relaunched.load()
@@ -111,5 +113,20 @@ final class SessionViewModelTests: XCTestCase {
             liveActivityService.endCallCount,
             1
         )
+    }
+
+    func test_startSession_storesThePlannedRate_whenProvided() async {
+        _ = await viewModel.startSession(duration: 60 * 60, plannedRate: .hourly(price: 5))
+
+        XCTAssertEqual(viewModel.activeSession?.plannedRate, .hourly(price: 5))
+    }
+
+    func test_endSession_calculatesCost_whenPlannedRateWasSet() async throws {
+        _ = await viewModel.startSession(duration: 2 * 60 * 60, plannedRate: .hourly(price: 4))
+
+        await viewModel.endSession()
+
+        let saved = try XCTUnwrap(sessions.sessions.first)
+        XCTAssertNotNil(saved.cost)
     }
 }

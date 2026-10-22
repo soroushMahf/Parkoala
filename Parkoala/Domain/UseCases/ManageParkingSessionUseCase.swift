@@ -34,7 +34,8 @@ struct ManageParkingSessionUseCase {
     func startSession(
         duration: TimeInterval,
         restriction: ParkingRestriction? = nil,
-        location: ParkingLocation? = nil
+        location: ParkingLocation? = nil,
+        plannedRate: RateRule? = nil
     ) async throws -> ParkingSession {
 
         guard duration >= 60, duration <= Self.maximumDuration else {
@@ -57,7 +58,8 @@ struct ManageParkingSessionUseCase {
             startDate: startDate,
             expiryDate: startDate.addingTimeInterval(duration),
             restriction: restriction,
-            location: location
+            location: location,
+            plannedRate: plannedRate
         )
 
         try await sessionRepository.save(session)

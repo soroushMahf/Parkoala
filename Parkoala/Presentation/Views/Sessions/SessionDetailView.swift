@@ -92,6 +92,20 @@ enum SessionFormat {
     private static func format(_ seconds: TimeInterval) -> String {
         Duration.seconds(seconds).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated))
     }
+
+    // How a rate reads on the session summary, e.g. "$5.00 / hr".
+    static func rateDescription(_ rate: RateRule) -> String {
+        switch rate {
+        case let .hourly(price):
+            "\(price.formatted(.currency(code: "AUD"))) / hr"
+        case let .flat(price):
+            "\(price.formatted(.currency(code: "AUD"))) flat"
+        case let .earlyBird(price, _, _):
+            "\(price.formatted(.currency(code: "AUD"))) early bird"
+        case let .freePeriod(minutes):
+            "Free for \(minutes) min"
+        }
+    }
 }
 
 #Preview {

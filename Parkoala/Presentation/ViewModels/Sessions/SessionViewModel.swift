@@ -10,19 +10,24 @@ final class SessionViewModel {
     private let useCase: ManageParkingSessionUseCase
     private let alertsUseCase: ManageParkingAlertsUseCase
     private let liveActivityService: LiveActivityService
+    private let costUseCase: CalculateParkingCostsUseCase
 
     private(set) var activeSession: ParkingSession?
+    // The session just ended, shown on the "Parking Session Ended" summary.
+    private(set) var lastEndedSession: ParkingSession?
     private(set) var isLoading = false
     var errorMessage: String?
 
     init(
         useCase: ManageParkingSessionUseCase,
         alertsUseCase: ManageParkingAlertsUseCase,
-        liveActivityService: LiveActivityService
+        liveActivityService: LiveActivityService,
+        costUseCase: CalculateParkingCostsUseCase
     ) {
         self.useCase = useCase
         self.alertsUseCase = alertsUseCase
         self.liveActivityService = liveActivityService
+        self.costUseCase = costUseCase
     }
 
     func load() async {
@@ -33,10 +38,11 @@ final class SessionViewModel {
 
     // Returns true when the session started, so the sheet can close
     @discardableResult
-    func startSession(duration: TimeInterval) async -> Bool {
+    func startSession(duration: TimeInterval, plannedRate: RateRule? = nil) async -> Bool {
         await run {
             let session = try await self.useCase.startSession(
-                duration: duration
+                duration: duration,
+                plannedRate: plannedRate
             )
 
             self.activeSession = session
@@ -62,14 +68,35 @@ final class SessionViewModel {
 
     func endSession() async {
         await run {
-            _ = try await self.useCase.endSession()
+            var session = try await self.useCase.endSession()
 
             self.alertsUseCase.cancelExpiryReminders()
 
             await self.liveActivityService.endActivity()
 
+            // The user already told us the rate when they started, so price the
+            // stay straight away instead of sending them to the Money tab for it.
+            if let plannedRate = session.plannedRate, let endDate = session.endDate {
+                do {
+                    let estimate = try self.costUseCase.calculateFee(
+                        for: session,
+                        endingAt: endDate,
+                        rates: [plannedRate]
+                    )
+                    session = try await self.costUseCase.recordEstimatedCost(estimate.amount, for: session)
+                } catch {
+                    print("Failed to auto-calculate parking cost: \(error)")
+                }
+            }
+
             self.activeSession = nil
+            self.lastEndedSession = session
         }
+    }
+
+    // Clears the "Ended" summary once the user dismisses it.
+    func dismissEndedSessionSummary() {
+        lastEndedSession = nil
     }
 
     // Shows any error as a message the user can read
