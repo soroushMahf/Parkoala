@@ -24,6 +24,13 @@ struct TfNSWCarParkDTO: Decodable {
             latitude = container.decodeLenientDouble(forKey: .latitude)
             longitude = container.decodeLenientDouble(forKey: .longitude)
         }
+
+        init(suburb: String? = nil, address: String? = nil, latitude: Double?, longitude: Double?) {
+            self.suburb = suburb
+            self.address = address
+            self.latitude = latitude
+            self.longitude = longitude
+        }
     }
 
     struct Occupancy: Decodable {
@@ -36,6 +43,10 @@ struct TfNSWCarParkDTO: Decodable {
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             total = container.decodeLenientInt(forKey: .total)
+        }
+
+        init(total: Int?) {
+            self.total = total
         }
     }
 
@@ -72,6 +83,25 @@ struct TfNSWCarParkDTO: Decodable {
         } else {
             messageDate = nil
         }
+    }
+
+    // Test-only convenience — production code only ever builds these via decoding.
+    init(
+        parkID: String? = nil,
+        facilityID: String?,
+        facilityName: String? = nil,
+        spots: Int?,
+        occupancy: Occupancy?,
+        location: Location?,
+        messageDate: Date?
+    ) {
+        self.parkID = parkID
+        self.facilityID = facilityID
+        self.facilityName = facilityName
+        self.spots = spots
+        self.occupancy = occupancy
+        self.location = location
+        self.messageDate = messageDate
     }
 
     static let sydneyDateFormatter: DateFormatter = {

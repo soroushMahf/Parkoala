@@ -7,20 +7,27 @@ import CoreLocation
 actor TfNSWCarParkRepository: CarParkRepository {
     // Historical-only Metro entries; never shown.
     private nonisolated static let excludedFacilityIDs: Set<String> = ["1", "2", "3", "4", "5"]
-    private nonisolated static let cacheLifetime: TimeInterval = 60
     private nonisolated static let staleAfter: TimeInterval = 30 * 60
 
     // Set once at init and never mutated again, so it's safe to leave
     // unisolated — that also sidesteps the actor-init isolation checker
     // tripping over a non-Sendable protocol type.
     private nonisolated(unsafe) let client: TfNSWCarParkClient?
+    private let cacheLifetime: TimeInterval
     private var cache: (carParks: [CarPark], fetchedAt: Date)?
 
-    init(client: TfNSWCarParkClient?) {
+    // cacheLifetime defaults to the real 60s; tests pass a shorter value so
+    // expiry can be exercised without sleeping a minute.
+    init(client: TfNSWCarParkClient?, cacheLifetime: TimeInterval = 60) {
         self.client = client
+        self.cacheLifetime = cacheLifetime
     }
 
-    
+    // Custom INFOPLIST_KEY_* build settings only work for Apple's own
+    // recognized keys, not arbitrary names — GENERATE_INFOPLIST_FILE won't
+    // surface a made-up key like TFNSWAPIKey. So instead Secrets.xcconfig
+    // itself is bundled as a resource (Target Membership checked in Xcode),
+    // and this reads TFNSW_API_KEY out of it directly.
     init() {
         self.init(client: URLSessionTfNSWCarParkClient(apiKey: Self.readAPIKeyFromBundledSecretsFile()))
     }
@@ -74,7 +81,7 @@ actor TfNSWCarParkRepository: CarParkRepository {
     }
 
     private func freshFacilities(using client: TfNSWCarParkClient) async throws -> [CarPark] {
-        if let cache, Date.now.timeIntervalSince(cache.fetchedAt) < Self.cacheLifetime {
+        if let cache, Date.now.timeIntervalSince(cache.fetchedAt) < cacheLifetime {
             return cache.carParks
         }
 
