@@ -29,7 +29,7 @@ struct RootView: View {
             }
             
             Tab("Money", systemImage: "dollarsign.circle.fill") {
-                placeholder("Parking costs", owner: "Money")
+                MoneyView(viewModel: .live())
             }
         }
     }
