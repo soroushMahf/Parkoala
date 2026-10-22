@@ -6,19 +6,8 @@
 	objectVersion = 110;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		FA2883D03081CA7B008443DC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FA2883AD3081CA7A008443DC /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FA2883B43081CA7A008443DC;
-			remoteInfo = Parkoala;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		FA2883B53081CA7A008443DC /* Parkoala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Parkoala.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA2883D13081CA7B008443DC /* ParkoalaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParkoalaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -26,10 +15,17 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Data/DTOs/.gitkeep,
+				Data/Persistence/.gitkeep,
 				Data/Remote/.gitkeep,
+				Data/Repositories/.gitkeep,
+				Platform/Services/.gitkeep,
 				Presentation/Components/.gitkeep,
+				Presentation/ViewModels/Location/.gitkeep,
 				Presentation/ViewModels/Money/.gitkeep,
+				Presentation/ViewModels/Sessions/.gitkeep,
+				Presentation/Views/Location/.gitkeep,
 				Presentation/Views/Money/.gitkeep,
+				Presentation/Views/Sessions/.gitkeep,
 				SupportingFiles/.gitkeep,
 			);
 			target = FA2883B43081CA7A008443DC /* Parkoala */;
@@ -45,20 +41,10 @@
 			path = Parkoala;
 			sourceTree = "<group>";
 		};
-		FA2883D23081CA7B008443DC /* ParkoalaTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ParkoalaTests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		FA2883B23081CA7A008443DC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			files = (
-			);
-		};
-		FA2883D33081CA7B008443DC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
 			);
@@ -70,7 +56,6 @@
 			isa = PBXGroup;
 			children = (
 				FA2883B73081CA7A008443DC /* Parkoala */,
-				FA2883D23081CA7B008443DC /* ParkoalaTests */,
 				FA2883B63081CA7A008443DC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -79,7 +64,6 @@
 			isa = PBXGroup;
 			children = (
 				FA2883B53081CA7A008443DC /* Parkoala.app */,
-				FA2883D13081CA7B008443DC /* ParkoalaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -105,27 +89,6 @@
 			productReference = FA2883B53081CA7A008443DC /* Parkoala.app */;
 			productType = "com.apple.product-type.application";
 		};
-		FA2883D63081CA7B008443DC /* ParkoalaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = FA2883D103081CA7B008443DC /* Build configuration list for PBXNativeTarget "ParkoalaTests" */;
-			buildPhases = (
-				FA2883D53081CA7B008443DC /* Sources */,
-				FA2883D33081CA7B008443DC /* Frameworks */,
-				FA2883D43081CA7B008443DC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				FA2883D73081CA7B008443DC /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				FA2883D23081CA7B008443DC /* ParkoalaTests */,
-			);
-			name = ParkoalaTests;
-			productName = ParkoalaTests;
-			productReference = FA2883D13081CA7B008443DC /* ParkoalaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -138,10 +101,6 @@
 				TargetAttributes = {
 					FA2883B43081CA7A008443DC = {
 						CreatedOnToolsVersion = 27.0;
-					};
-					FA2883D63081CA7B008443DC = {
-						CreatedOnToolsVersion = 27.1;
-						TestTargetID = FA2883B43081CA7A008443DC;
 					};
 				};
 			};
@@ -160,18 +119,12 @@
 			projectRoot = "";
 			targets = (
 				FA2883B43081CA7A008443DC /* Parkoala */,
-				FA2883D63081CA7B008443DC /* ParkoalaTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		FA2883B33081CA7A008443DC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			files = (
-			);
-		};
-		FA2883D43081CA7B008443DC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -184,20 +137,7 @@
 			files = (
 			);
 		};
-		FA2883D53081CA7B008443DC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			files = (
-			);
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		FA2883D73081CA7B008443DC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FA2883B43081CA7A008443DC /* Parkoala */;
-			targetProxy = FA2883D03081CA7B008443DC /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		FA2883BE3081CA7B008443DC /* Debug configuration for PBXProject "Parkoala" */ = {
@@ -333,7 +273,6 @@
 				DEVELOPMENT_TEAM = 796TJLYZD2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Parkoala uses your location to save where you parked and help you find your vehicle.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -366,7 +305,6 @@
 				DEVELOPMENT_TEAM = 796TJLYZD2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Parkoala uses your location to save where you parked and help you find your vehicle.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -389,50 +327,6 @@
 			};
 			name = Release;
 		};
-		FA2883D83081CA7B008443DC /* Debug configuration for PBXNativeTarget "ParkoalaTests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 796TJLYZD2;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.SoroushMah.ParkoalaTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Parkoala.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Parkoala";
-			};
-			name = Debug;
-		};
-		FA2883D93081CA7B008443DC /* Release configuration for PBXNativeTarget "ParkoalaTests" */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 796TJLYZD2;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.SoroushMah.ParkoalaTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Parkoala.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Parkoala";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -449,14 +343,6 @@
 			buildConfigurations = (
 				FA2883C13081CA7B008443DC /* Debug configuration for PBXNativeTarget "Parkoala" */,
 				FA2883C23081CA7B008443DC /* Release configuration for PBXNativeTarget "Parkoala" */,
-			);
-			defaultConfigurationName = Release;
-		};
-		FA2883D103081CA7B008443DC /* Build configuration list for PBXNativeTarget "ParkoalaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				FA2883D83081CA7B008443DC /* Debug configuration for PBXNativeTarget "ParkoalaTests" */,
-				FA2883D93081CA7B008443DC /* Release configuration for PBXNativeTarget "ParkoalaTests" */,
 			);
 			defaultConfigurationName = Release;
 		};

@@ -6,9 +6,3 @@
 //
 
 import Foundation
-
-enum ParkingAlertError: Error, Equatable {
-    case notificationsDenied
-    case invalidExpiryTime
-    case schedulingFailed
-}
