@@ -19,12 +19,15 @@ final class LocationViewModel {
     private let locationService: LocationService
     private let locationUseCase: ManageParkingLocationUseCase
     private let carParkSearchService: CarParkSearchService
+    private let carParkRepository: CarParkRepository
+    private let mergeNearbyCarParksUseCase = MergeNearbyCarParksUseCase()
     
     private(set) var parkedLocation: ParkingLocation?
     private(set) var errorMessage: String?
     private(set) var isLoading = false
     
     private(set) var nearbyCarParks: [MKMapItem] = []
+    private(set) var liveCarParks: [CarPark] = []
     private(set) var isSearching = false
     
     var locationErrorMessage: String? {
@@ -76,14 +79,49 @@ final class LocationViewModel {
         .sorted { $0.distanceMeters < $1.distanceMeters }
     }
     
+    // MapKit results plus live TfNSW availability, deduped by proximity and
+    // sorted by distance. This is what the Nearby list shows.
+    var nearbyCarParksWithAvailability: [NearbyCarPark] {
+        guard let currentLocation else { return [] }
+        
+        let mapKitCarParks = nearbyCarParks.map { mapItem -> CarPark in
+            let coordinate = mapItem.placemark.coordinate
+            return CarPark(
+                id: "\(coordinate.latitude),\(coordinate.longitude),\(mapItem.name ?? "")",
+                name: mapItem.name ?? "Parking",
+                coordinate: Coordinate(latitude: coordinate.latitude, longitude: coordinate.longitude),
+                source: .mapSearch,
+                totalSpaces: nil,
+                availableSpaces: nil,
+                lastUpdated: nil
+            )
+        }
+        
+        let merged = mergeNearbyCarParksUseCase.merge(
+            mapKitResults: mapKitCarParks,
+            liveResults: liveCarParks,
+            userCoordinate: currentLocation
+        )
+        
+        let userLocation = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
+        
+        return merged.map { carPark in
+            let facilityLocation = CLLocation(latitude: carPark.coordinate.latitude, longitude: carPark.coordinate.longitude)
+            let distance = userLocation.distance(from: facilityLocation)
+            return NearbyCarPark(carPark: carPark, distanceMeters: distance)
+        }
+    }
+    
     init(
         locationService: LocationService,
         locationUseCase: ManageParkingLocationUseCase,
-        carParkSearchService: CarParkSearchService? = nil
+        carParkSearchService: CarParkSearchService? = nil,
+        carParkRepository: CarParkRepository? = nil
     ) {
         self.locationService = locationService
         self.locationUseCase = locationUseCase
         self.carParkSearchService = carParkSearchService ?? CarParkSearchService()
+        self.carParkRepository = carParkRepository ?? TfNSWCarParkRepository()
     }
     
     func requestPermission() {
@@ -135,7 +173,9 @@ final class LocationViewModel {
         }
     }
     
-    // Searches for parking facilities around the specific location
+    // Searches for parking facilities around the specific location, both on
+    // MapKit and the live TfNSW availability feed. A failure to load live
+    // availability never blocks or errors the MapKit-backed list.
     func searchNearbyParking(at coordinate: Coordinate) async {
         guard !isSearching else { return }
         
@@ -143,11 +183,20 @@ final class LocationViewModel {
         errorMessage = nil
         defer { isSearching = false }
         
+        async let mapKitSearch = carParkSearchService.searchNearby(coordinate: coordinate)
+        async let liveSearch = fetchLiveCarParks(at: coordinate)
+        
         do {
-            nearbyCarParks = try await carParkSearchService.searchNearby(coordinate: coordinate)
+            nearbyCarParks = try await mapKitSearch
         } catch {
             errorMessage = "Unable to find nearby parking. Please try again."
         }
+        
+        liveCarParks = await liveSearch
+    }
+    
+    private func fetchLiveCarParks(at coordinate: Coordinate) async -> [CarPark] {
+        (try? await carParkRepository.nearbyCarParks(around: coordinate, radiusInKilometres: 5)) ?? []
     }
     
     func clearError() {
@@ -159,6 +208,21 @@ struct NearbyParkingResult: Identifiable {
     let id: String
     let mapItem: MKMapItem
     let distanceMeters: Double
+    
+    var formattedDistance: String {
+        if distanceMeters < 1000 {
+            return "\(Int(distanceMeters.rounded())) m"
+        }
+        
+        return String(format: "%.1f km", distanceMeters / 1000)
+    }
+}
+
+struct NearbyCarPark: Identifiable {
+    let carPark: CarPark
+    let distanceMeters: Double
+    
+    var id: String { carPark.id }
     
     var formattedDistance: String {
         if distanceMeters < 1000 {

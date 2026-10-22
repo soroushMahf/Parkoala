@@ -17,6 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FA2883B43081CA7A008443DC"
                BuildableName = "Parkoala.app"
+               BlueprintName = "Parkoala"
                ReferencedContainer = "container:Parkoala.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -59,6 +60,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA2883B43081CA7A008443DC"
             BuildableName = "Parkoala.app"
+            BlueprintName = "Parkoala"
             ReferencedContainer = "container:Parkoala.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -79,6 +81,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FA2883B43081CA7A008443DC"
             BuildableName = "Parkoala.app"
+            BlueprintName = "Parkoala"
             ReferencedContainer = "container:Parkoala.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -22,6 +22,7 @@ struct NearbyMapView: View {
     
     @State private var isParkingSheetPresented = false
     @State private var selectedCarParkIndex: Int?
+    @State private var selectedListCarPark: CarPark?
     
     @State private var isCenteredOnUser = false
     
@@ -166,6 +167,7 @@ struct NearbyMapView: View {
             .sheet(isPresented: $isParkingSheetPresented, onDismiss: {
                 selectedCarParkID = nil
                 selectedCarParkIndex = nil
+                selectedListCarPark = nil
             }) {
                 Group {
                     if let index = selectedCarParkIndex,
@@ -175,14 +177,17 @@ struct NearbyMapView: View {
                             carPark: viewModel.nearbyCarParks[index]
                         )
                     
+                    } else if let selectedListCarPark {
+                        
+                        CarParkDetailView(
+                            carPark: mapItem(for: selectedListCarPark)
+                        )
+                        
                     } else {
                         NearbyParkingListView(
-                            carParks: Array(viewModel.sortedNearbyCarParks.prefix(6))
+                            carParks: Array(viewModel.nearbyCarParksWithAvailability.prefix(6))
                         ) { carPark in
-                            if let index = viewModel.nearbyCarParks.firstIndex(of: carPark) {
-                                selectedCarParkIndex = index
-                                selectedCarParkID = String(index)
-                            }
+                            selectedListCarPark = carPark
                         }
                     }
                 }
@@ -246,6 +251,28 @@ struct NearbyMapView: View {
         selectedCarParkID = nil
         selectedCarParkIndex = nil
         isParkingSheetPresented = true
+    }
+    
+    // Builds an MKMapItem for the detail sheet even when the selected row came
+    // from a TfNSW-only facility MapKit never returned. Falls back to a
+    // coordinate-only placemark, which CarParkDetailView already handles
+    // gracefully ("Address unavailable").
+    private func mapItem(for carPark: CarPark) -> MKMapItem {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: carPark.coordinate.latitude,
+            longitude: carPark.coordinate.longitude
+        )
+        
+        if let matched = viewModel.nearbyCarParks.first(where: {
+            $0.placemark.coordinate.latitude == coordinate.latitude &&
+            $0.placemark.coordinate.longitude == coordinate.longitude
+        }) {
+            return matched
+        }
+        
+        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
+        mapItem.name = carPark.name
+        return mapItem
     }
 }
 
