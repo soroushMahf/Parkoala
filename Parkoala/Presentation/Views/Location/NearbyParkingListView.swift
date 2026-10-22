@@ -10,8 +10,8 @@ import MapKit
 
 struct NearbyParkingListView: View {
     
-    let carParks: [NearbyParkingResult]
-    let onSelect: (MKMapItem) -> Void
+    let carParks: [NearbyCarPark]
+    let onSelect: (CarPark) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -26,51 +26,98 @@ struct NearbyParkingListView: View {
             
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    ForEach(carParks) { result in
+                    ForEach(carParks) { nearbyCarPark in
+                        let carPark = nearbyCarPark.carPark
+                        
                         VStack(alignment: .leading, spacing: 8) {
                             
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(result.mapItem.name ?? "Parking")
+                                    Text(carPark.name)
                                         .font(.headline)
                                     
                                     Label(
-                                        result.formattedDistance + " away",
+                                        nearbyCarPark.formattedDistance + " away",
                                         systemImage: "location"
                                     )
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
+                                    
+                                    availabilityLabel(for: carPark)
                                 }
                                 
                                 Spacer()
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel(accessibilityLabel(for: carPark, distance: nearbyCarPark.formattedDistance))
                             
                             HStack {
                                 Button("View Details") {
-                                    onSelect(result.mapItem)
+                                    onSelect(carPark)
                                 }
                                 .buttonStyle(.bordered)
                                 
                                 Button {
-                                    result.mapItem.openInMaps(
-                                        launchOptions: [
-                                            MKLaunchOptionsDirectionsModeKey:
-                                                MKLaunchOptionsDirectionsModeDriving
-                                        ]
-                                    )
+                                    openDirections(to: carPark)
                                 } label: {
                                     Label("Directions", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
                                 }
                                 .buttonStyle(.borderedProminent)
                             }
                         }
+                        .frame(minHeight: 44)
                         
                         Divider()
                     }
                 }
             }
+            
+            Text("Availability is estimated and not guaranteed.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
         }
         .padding(30)
+    }
+    
+    @ViewBuilder
+    private func availabilityLabel(for carPark: CarPark) -> some View {
+        if carPark.availableSpaces != nil, carPark.totalSpaces != nil {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(carPark.availabilityText)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                
+                if let updatedAtText = carPark.updatedAtText {
+                    Text(updatedAtText)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } else {
+            Text(carPark.availabilityText)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+    }
+    
+    private func accessibilityLabel(for carPark: CarPark, distance: String) -> String {
+        "\(carPark.name), \(distance) away, \(carPark.accessibilityAvailabilityText)"
+    }
+    
+    private func openDirections(to carPark: CarPark) {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: carPark.coordinate.latitude,
+            longitude: carPark.coordinate.longitude
+        )
+        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
+        mapItem.name = carPark.name
+        
+        mapItem.openInMaps(
+            launchOptions: [
+                MKLaunchOptionsDirectionsModeKey:
+                    MKLaunchOptionsDirectionsModeDriving
+            ]
+        )
     }
 }
 
