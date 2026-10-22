@@ -63,4 +63,37 @@ struct ManageParkingRestrictionsUseCaseTests {
             try fixture.useCase.validateSign(sign)
         }
     }
+
+    // Can I park here?
+
+    @Test func checkParkingAllowsFullLimitWhenArrivingInsideSignHours() throws {
+        let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.tuesday(hour: 10))
+        #expect(verdict == .timeLimitApplies(moveCarBy: fixture.tuesday(hour: 12)))
+    }
+
+    @Test func checkParkingAllowsFullLimitWhenArrivingAsSignStarts() throws {
+        let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.tuesday(hour: 8))
+        #expect(verdict == .timeLimitApplies(moveCarBy: fixture.tuesday(hour: 10)))
+    }
+
+    @Test func checkParkingStopsAtSignEndWhenLimitRunsPastIt() throws {
+        // 5 pm + 2 hours would be 7 pm, but the sign ends at 6 pm
+        let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.tuesday(hour: 17))
+        #expect(verdict == .timeLimitApplies(moveCarBy: fixture.tuesday(hour: 18)))
+    }
+
+    @Test func checkParkingFindsNoLimitWhenArrivingAsSignEnds() throws {
+        let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.tuesday(hour: 18))
+        #expect(verdict == .noTimeLimitNow(limitStartsAt: nil))
+    }
+
+    @Test func checkParkingSaysWhenLimitStartsBeforeSignHours() throws {
+        let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.tuesday(hour: 7))
+        #expect(verdict == .noTimeLimitNow(limitStartsAt: fixture.tuesday(hour: 8)))
+    }
+
+    @Test func checkParkingFindsNoLimitOnDayTheSignDoesNotCover() throws {
+        let verdict = try fixture.useCase.checkParking(under: fixture.twoHourWeekdaySign, at: fixture.saturday(hour: 10))
+        #expect(verdict == .noTimeLimitNow(limitStartsAt: nil))
+    }
 }
