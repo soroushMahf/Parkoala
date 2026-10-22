@@ -2,7 +2,6 @@ import Foundation
 
 // What a parking sign allows, for example "2P 8am-6pm Mon-Fri".
 struct ParkingRestriction: Identifiable, Hashable {
-    
     enum Kind: Hashable {
         case timeLimited
         case noStopping
@@ -12,7 +11,6 @@ struct ParkingRestriction: Identifiable, Hashable {
 
     let id: UUID
     var kind: Kind
-    
     // Longest stay allowed in seconds. nil when there is no time limit.
     var maxStay: TimeInterval?
     // Times the sign applies, as minutes after midnight (8am = 480).

@@ -9,6 +9,7 @@ struct ParkingSession: Identifiable, Hashable {
     var endDate: Date?
     var restriction: ParkingRestriction?
     var location: ParkingLocation?
+    var savedSpotID: UUID?
     // Set once the session ends and the cost is worked out.
     var cost: Decimal?
 
@@ -22,6 +23,7 @@ struct ParkingSession: Identifiable, Hashable {
         endDate: Date? = nil,
         restriction: ParkingRestriction? = nil,
         location: ParkingLocation? = nil,
+        savedSpotID: UUID? = nil,
         cost: Decimal? = nil
     ) {
         self.id = id
@@ -31,6 +33,7 @@ struct ParkingSession: Identifiable, Hashable {
         self.endDate = endDate
         self.restriction = restriction
         self.location = location
+        self.savedSpotID = savedSpotID
         self.cost = cost
     }
 }
