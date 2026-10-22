@@ -10,6 +10,7 @@ struct ActiveSessionView: View {
     private let locationViewModel: LocationViewModel?
     @State private var isShowingStartSheet = false
     @State private var isConfirmingEnd = false
+    @State private var endedSession: ParkingSession?
 
     // Uses the real SwiftData store unless a view model is passed in (previews)
     init(
@@ -67,6 +68,14 @@ struct ActiveSessionView: View {
                 Task {
                     await viewModel.load()
                 }
+            }
+            .onChange(of: viewModel.lastEndedSession) { _, newValue in
+                endedSession = newValue
+            }
+            .sheet(item: $endedSession, onDismiss: {
+                viewModel.dismissEndedSessionSummary()
+            }) { session in
+                SessionEndedView(session: session)
             }
         }
     }
