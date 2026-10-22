@@ -6,7 +6,20 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5778996E3088E6B200784AF6 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5778996D3088E6B200784AF6 /* WidgetKit.framework */; };
+		577899703088E6B200784AF6 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5778996F3088E6B200784AF6 /* SwiftUI.framework */; };
+		5778997D3088E6B300784AF6 /* ParkoalaWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5778996B3088E6B100784AF6 /* ParkoalaWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		5778997B3088E6B300784AF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA2883AD3081CA7A008443DC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5778996A3088E6B100784AF6;
+			remoteInfo = ParkoalaWidgetsExtension;
+		};
 		FA2883D03081CA7B008443DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA2883AD3081CA7A008443DC /* Project object */;
@@ -16,12 +29,41 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5778997E3088E6B300784AF6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				5778997D3088E6B300784AF6 /* ParkoalaWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		5778996B3088E6B100784AF6 /* ParkoalaWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ParkoalaWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5778996D3088E6B200784AF6 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		5778996F3088E6B200784AF6 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		FA2883B53081CA7A008443DC /* Parkoala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Parkoala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA2883D13081CA7B008443DC /* ParkoalaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParkoalaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		577899823088E6B300784AF6 /* Exceptions for "ParkoalaWidgets" folder in "ParkoalaWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5778996A3088E6B100784AF6 /* ParkoalaWidgetsExtension */;
+		};
+		577899863088E7DB00784AF6 /* Exceptions for "Parkoala" folder in "ParkoalaWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Domain/Models/ParkingActivityAttributes.swift,
+			);
+			target = 5778996A3088E6B100784AF6 /* ParkoalaWidgetsExtension */;
+		};
 		FA2883C33081CA7B008443DC /* Exceptions for "Parkoala" folder in "Parkoala" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -37,10 +79,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		577899713088E6B200784AF6 /* ParkoalaWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				577899823088E6B300784AF6 /* Exceptions for "ParkoalaWidgets" folder in "ParkoalaWidgetsExtension" target */,
+			);
+			path = ParkoalaWidgets;
+			sourceTree = "<group>";
+		};
 		FA2883B73081CA7A008443DC /* Parkoala */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				FA2883C33081CA7B008443DC /* Exceptions for "Parkoala" folder in "Parkoala" target */,
+				577899863088E7DB00784AF6 /* Exceptions for "Parkoala" folder in "ParkoalaWidgetsExtension" target */,
 			);
 			path = Parkoala;
 			sourceTree = "<group>";
@@ -53,6 +104,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		577899683088E6B100784AF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				577899703088E6B200784AF6 /* SwiftUI.framework in Frameworks */,
+				5778996E3088E6B200784AF6 /* WidgetKit.framework in Frameworks */,
+			);
+		};
 		FA2883B23081CA7A008443DC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
@@ -66,11 +124,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5778996C3088E6B100784AF6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5778996D3088E6B200784AF6 /* WidgetKit.framework */,
+				5778996F3088E6B200784AF6 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FA2883AC3081CA7A008443DC = {
 			isa = PBXGroup;
 			children = (
 				FA2883B73081CA7A008443DC /* Parkoala */,
 				FA2883D23081CA7B008443DC /* ParkoalaTests */,
+				577899713088E6B200784AF6 /* ParkoalaWidgets */,
+				5778996C3088E6B100784AF6 /* Frameworks */,
 				FA2883B63081CA7A008443DC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -80,6 +149,7 @@
 			children = (
 				FA2883B53081CA7A008443DC /* Parkoala.app */,
 				FA2883D13081CA7B008443DC /* ParkoalaTests.xctest */,
+				5778996B3088E6B100784AF6 /* ParkoalaWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,6 +157,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5778996A3088E6B100784AF6 /* ParkoalaWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 577899813088E6B300784AF6 /* Build configuration list for PBXNativeTarget "ParkoalaWidgetsExtension" */;
+			buildPhases = (
+				577899673088E6B100784AF6 /* Sources */,
+				577899683088E6B100784AF6 /* Frameworks */,
+				577899693088E6B100784AF6 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				577899713088E6B200784AF6 /* ParkoalaWidgets */,
+			);
+			name = ParkoalaWidgetsExtension;
+			productName = ParkoalaWidgetsExtension;
+			productReference = 5778996B3088E6B100784AF6 /* ParkoalaWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		FA2883B43081CA7A008443DC /* Parkoala */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA2883C03081CA7B008443DC /* Build configuration list for PBXNativeTarget "Parkoala" */;
@@ -94,8 +182,12 @@
 				FA2883B13081CA7A008443DC /* Sources */,
 				FA2883B23081CA7A008443DC /* Frameworks */,
 				FA2883B33081CA7A008443DC /* Resources */,
+				5778997E3088E6B300784AF6 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
+			);
+			dependencies = (
+				5778997C3088E6B300784AF6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				FA2883B73081CA7A008443DC /* Parkoala */,
@@ -133,9 +225,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2700;
+				LastSwiftUpdateCheck = 2710;
 				LastUpgradeCheck = 2710;
 				TargetAttributes = {
+					5778996A3088E6B100784AF6 = {
+						CreatedOnToolsVersion = 27.1;
+					};
 					FA2883B43081CA7A008443DC = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -161,11 +256,17 @@
 			targets = (
 				FA2883B43081CA7A008443DC /* Parkoala */,
 				FA2883D63081CA7B008443DC /* ParkoalaTests */,
+				5778996A3088E6B100784AF6 /* ParkoalaWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		577899693088E6B100784AF6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 		FA2883B33081CA7A008443DC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
@@ -179,6 +280,11 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		577899673088E6B100784AF6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 		FA2883B13081CA7A008443DC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
@@ -192,6 +298,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5778997C3088E6B300784AF6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5778996A3088E6B100784AF6 /* ParkoalaWidgetsExtension */;
+			targetProxy = 5778997B3088E6B300784AF6 /* PBXContainerItemProxy */;
+		};
 		FA2883D73081CA7B008443DC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FA2883B43081CA7A008443DC /* Parkoala */;
@@ -200,6 +311,68 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		5778997F3088E6B300784AF6 /* Debug configuration for PBXNativeTarget "ParkoalaWidgetsExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 796TJLYZD2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ParkoalaWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ParkoalaWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SoroushMah.Parkoala.ParkoalaWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		577899803088E6B300784AF6 /* Release configuration for PBXNativeTarget "ParkoalaWidgetsExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 796TJLYZD2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ParkoalaWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ParkoalaWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SoroushMah.Parkoala.ParkoalaWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		FA2883BE3081CA7B008443DC /* Debug configuration for PBXProject "Parkoala" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -334,6 +507,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Parkoala uses your location to save where you parked and help you find your vehicle.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -367,6 +541,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Parkoala uses your location to save where you parked and help you find your vehicle.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -436,6 +611,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		577899813088E6B300784AF6 /* Build configuration list for PBXNativeTarget "ParkoalaWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5778997F3088E6B300784AF6 /* Debug configuration for PBXNativeTarget "ParkoalaWidgetsExtension" */,
+				577899803088E6B300784AF6 /* Release configuration for PBXNativeTarget "ParkoalaWidgetsExtension" */,
+			);
+			defaultConfigurationName = Release;
+		};
 		FA2883B03081CA7A008443DC /* Build configuration list for PBXProject "Parkoala" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
