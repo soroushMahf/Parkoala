@@ -7,7 +7,6 @@
 import SwiftUI
 
 /// The parts of a parking sign the driver copies in: time limit, hours and days.
-/// Used by the Enter Parking Sign sheet and by "Can I park here?".
 struct ParkingSignFields: View {
     @Binding var restriction: ParkingRestriction
 
