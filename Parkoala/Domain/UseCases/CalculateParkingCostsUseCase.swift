@@ -98,6 +98,43 @@ struct CalculateParkingCostsUseCase {
         try calculateFee(from: session.startDate, to: end, rates: rates)
     }
 
+    // Saves the estimated fee on a finished session, for the Money tab's "Add cost" flow.
+    @discardableResult
+    func recordEstimatedCost(_ amount: Decimal, for session: ParkingSession) async throws -> ParkingSession {
+        var updated = session
+        updated.cost = Self.roundedToCents(amount)
+        try await sessionRepository.save(updated)
+        return updated
+    }
+
+    // Validates and saves what the user says they were actually charged.
+    @discardableResult
+    func recordActualCost(_ amount: Decimal, for session: ParkingSession) async throws -> ParkingSession {
+        var updated = session
+        updated.actualCost = try validateActualCost(amount)
+        try await sessionRepository.save(updated)
+        return updated
+    }
+
+    // Saves corrected start/end times and a rate entered (or corrected) after the
+    // session ended, along with the estimate they produce together.
+    @discardableResult
+    func recordSessionDetails(
+        startDate: Date,
+        endDate: Date,
+        rate: RateRule,
+        estimate: CostEstimate,
+        for session: ParkingSession
+    ) async throws -> ParkingSession {
+        var updated = session
+        updated.startDate = startDate
+        updated.endDate = endDate
+        updated.plannedRate = rate
+        updated.cost = Self.roundedToCents(estimate.amount)
+        try await sessionRepository.save(updated)
+        return updated
+    }
+
 
     // History screen: "Monthly Spending" and "Sessions".
     func monthlySummary(for date: Date) async throws -> CostSummary {
