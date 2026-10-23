@@ -10,7 +10,6 @@
 		5778996E3088E6B200784AF6 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5778996D3088E6B200784AF6 /* WidgetKit.framework */; };
 		577899703088E6B200784AF6 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5778996F3088E6B200784AF6 /* SwiftUI.framework */; };
 		5778997D3088E6B300784AF6 /* ParkoalaWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5778996B3088E6B100784AF6 /* ParkoalaWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		FFFD99BE308A248E00076270 /* Secrets.example.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FFFD99BD308A248E00076270 /* Secrets.example.xcconfig */; };
 		FFFD99C0308A266100076270 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FFFD99BF308A266100076270 /* Secrets.xcconfig */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +48,6 @@
 		5778996F3088E6B200784AF6 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		FA2883B53081CA7A008443DC /* Parkoala.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Parkoala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA2883D13081CA7B008443DC /* ParkoalaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParkoalaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FFFD99BD308A248E00076270 /* Secrets.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.example.xcconfig; sourceTree = "<group>"; };
 		FFFD99BF308A266100076270 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,18 +66,6 @@
 			);
 			target = 5778996A3088E6B100784AF6 /* ParkoalaWidgetsExtension */;
 		};
-		FA2883C33081CA7B008443DC /* Exceptions for "Parkoala" folder in "Parkoala" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Presentation/Components/.gitkeep,
-				Presentation/ViewModels/Money/.gitkeep,
-				Presentation/Views/Money/.gitkeep,
-				Data/DTOs/.gitkeep,
-				Data/Remote/.gitkeep,
-				SupportingFiles/.gitkeep,
-			);
-			target = FA2883B43081CA7A008443DC /* Parkoala */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -94,7 +80,6 @@
 		FA2883B73081CA7A008443DC /* Parkoala */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				FA2883C33081CA7B008443DC /* Exceptions for "Parkoala" folder in "Parkoala" target */,
 				577899863088E7DB00784AF6 /* Exceptions for "Parkoala" folder in "ParkoalaWidgetsExtension" target */,
 			);
 			path = Parkoala;
@@ -144,7 +129,6 @@
 				FA2883D23081CA7B008443DC /* ParkoalaTests */,
 				577899713088E6B200784AF6 /* ParkoalaWidgets */,
 				5778996C3088E6B100784AF6 /* Frameworks */,
-				FFFD99BD308A248E00076270 /* Secrets.example.xcconfig */,
 				FFFD99BF308A266100076270 /* Secrets.xcconfig */,
 				FA2883B63081CA7A008443DC /* Products */,
 			);
@@ -276,7 +260,6 @@
 		FA2883B33081CA7A008443DC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
-				FFFD99BE308A248E00076270 /* Secrets.example.xcconfig in Resources */,
 				FFFD99C0308A266100076270 /* Secrets.xcconfig in Resources */,
 			);
 		};
