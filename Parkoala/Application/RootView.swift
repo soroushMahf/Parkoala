@@ -1,18 +1,35 @@
 import SwiftUI
+import SwiftData
 
 // The main tabs of the app. Each module owner swaps their placeholder
 // for their real screen once it is built.
 struct RootView: View {
+    
+    @State private var sessionViewModel = SessionViewModel.live()
+    
+    @State private var locationViewModel = LocationViewModel(
+        locationService: LocationService(),
+        locationUseCase: ManageParkingLocationUseCase(
+            sessionRepository: SwiftDataSessionRepository(
+                context: PersistenceController.shared.container.mainContext
+            )
+        )
+    )
+    
     var body: some View {
         TabView {
             Tab("Park", systemImage: "car.fill") {
-                placeholder("Parking session", owner: "Sessions")
+                ActiveSessionView(viewModel: sessionViewModel, locationViewModel: locationViewModel)
             }
             Tab("Nearby", systemImage: "map.fill") {
-                placeholder("Nearby car parks", owner: "Location")
+                NearbyMapView(viewModel: locationViewModel)
             }
+            Tab("Can I Park?", systemImage: "signpost.right.fill") {
+                    CanIParkScreen()
+            }
+            
             Tab("Money", systemImage: "dollarsign.circle.fill") {
-                placeholder("Parking costs", owner: "Money")
+                MoneyView(viewModel: .live())
             }
         }
     }
