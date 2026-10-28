@@ -4,15 +4,15 @@ Parkoala is an iOS app that helps drivers keep track of their parking by startin
 
 ## Features
 
-- **Timed parking sessions: **Start a session with a duration (and an optional rate), watch a live countdown on the Park tab, and end it whenever suited to your parking time.
-- **Live Activity & Lock Screen countdown: **An ActivityKit Live Activity (via `ParkoalaWidgets`) shows the time remaining on the Lock Screen and Dynamic Island while a session is active.
-- **Expiry reminders: **Local notifications fire 15 and 5 minutes before a session expires, and are cancelled automatically if the session ends early.
+- **Timed parking sessions:** Start a session with a duration (and an optional rate), watch a live countdown on the Park tab, and end it whenever suited to your parking time.
+- **Live Activity & Lock Screen countdown:** An ActivityKit Live Activity (via `ParkoalaWidgets`) shows the time remaining on the Lock Screen and Dynamic Island while a session is active.
+- **Expiry reminders:** Local notifications fire 15 and 5 minutes before a session expires, and are cancelled automatically if the session ends early.
 - **Nearby car parks**: A map of nearby car parks sourced from the live TfNSW Car Park API, merged with saved locations and deduplicated by distance.
 - **"Can I park here?"**: Enter the details off a parking sign (time limit, restricted hours, days) and get a yes or no answer on whether you can park now and when you'd need to move by.
-- **Parking cost tracking: **Automatic cost estimates when a session ends with a known rate, plus a Money tab to add a rate/estimate or log the actual amount charged for sessions that don't have one yet, with monthly spending totals.
+- **Parking cost tracking:** Automatic cost estimates when a session ends with a known rate, plus a Money tab to add a rate/estimate or log the actual amount charged for sessions that don't have one yet, with monthly spending totals.
 - **Session history**: Past sessions grouped by month, with duration, time range, rate, and cost for each.
-- **Find My Car: **Save where you parked (map pin and/or level & bay) and get directions back to it.
-- **Offline-friendly persistence: **Sessions and vehicles are stored locally on-device with SwiftData, so your data is there even without a connection.
+- **Find My Car:** Save where you parked (map pin and/or level & bay) and get directions back to it.
+- **Offline-friendly persistence:** Sessions and vehicles are stored locally on-device with SwiftData, so your data is there even without a connection.
 
 ## Requirements
 - Xcode 16 or later
