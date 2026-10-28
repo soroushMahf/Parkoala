@@ -1,6 +1,6 @@
 # Parkoala
 
-Parkoala is an iOS app that helps drivers park with confidence: start a timed parking session, get reminded before it expires, check whether a parking sign actually allows you to stay, find nearby car parks with live availability, and keep track of what parking has cost you over time.
+Parkoala is an iOS app that helps drivers keep track of their parking by starting a timed parking session, get reminded before it expires, check whether a parking sign actually allows you to stay, find nearby car parks with live availability, and keep track of what parking has cost you over time.
 
 ## Features
 
@@ -21,7 +21,7 @@ Parkoala is an iOS app that helps drivers park with confidence: start a timed pa
 
 ## Getting started
 1. Clone the repo and open `Parkoala.xcodeproj` in Xcode.
-2. Set up your TfNSW API key (see [Connecting the TfNSW Car Park API](#connecting-the-tfnsw-car-park-api) below).
+2. Set up your TfNSW API key (see [Connecting the TfNSW Car Park API](#connecting-the-tfnsw-car-park-api) below) for more, follow the TfNSW User Guide to creating and accessing APIs: https://opendata.transport.nsw.gov.au/developers/userguide .
 3. Select the `Parkoala` scheme and run on a simulator or device.
 
 ## Connecting the TfNSW Car Park API
